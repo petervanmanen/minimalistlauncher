@@ -1,6 +1,6 @@
 # Minimal Launcher
 
-A minimalistic Android home-screen launcher inspired by the Light Phone: a plain black
+A minimalistic Android home-screen launcher inspired by the very least a launcher can probably contain: a plain black
 screen, text-only app lists (no icons), a user-curated multi-page dock, a full
 alphabetical app list, and a dashboard with weather, a small map of your current
 location, and notifications.
