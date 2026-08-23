@@ -9,5 +9,8 @@
   existing documented requirement, ask for clarification before implementing
   rather than silently overriding it.
 - When changing or implementing a feature that's visible on screen: update
-  [README.md](README.md) to describe it, and refresh the relevant
-  screenshot(s) in `docs/screenshots/` so they stay current.
+  [README.md](README.md) to describe it, refresh the relevant
+  screenshot(s) in `docs/screenshots/` so they stay current, and follow
+  [DESIGN.md](DESIGN.md) — the color/type/spacing/interaction conventions
+  the rest of the app already uses. Update DESIGN.md itself if the change
+  establishes a new pattern worth reusing.
