@@ -138,6 +138,7 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
                     if (pkg != null) launchApp(context, pkg) else configuringLink = DashboardLink.MAPS
                 },
                 onLongClick = { configuringLink = DashboardLink.MAPS },
+                modifier = Modifier.padding(horizontal = 32.dp),
             )
         }
 

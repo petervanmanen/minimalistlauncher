@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import java.text.SimpleDateFormat
 import java.util.Date
 import kotlinx.coroutines.delay
 import nl.petervanmanen.minimalauncher.data.util.nextAlarmToShow
@@ -52,7 +53,10 @@ fun DateTimeSection(
         }
     }
 
-    val dateFormat = remember(context) { DateFormat.getDateFormat(context) }
+    val dateFormat = remember(context) {
+        val locale = context.resources.configuration.locales[0]
+        SimpleDateFormat(DateFormat.getBestDateTimePattern(locale, "MMMMd"), locale)
+    }
     val timeFormat = remember(context) { DateFormat.getTimeFormat(context) }
     val alarmToShow = remember(nextAlarmTrigger, now) { nextAlarmToShow(nextAlarmTrigger, now) }
 

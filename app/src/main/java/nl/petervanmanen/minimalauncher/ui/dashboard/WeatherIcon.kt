@@ -17,7 +17,7 @@ import nl.petervanmanen.minimalauncher.data.remote.WeatherIconType
 import nl.petervanmanen.minimalauncher.ui.theme.PureBlack
 import nl.petervanmanen.minimalauncher.ui.theme.PureWhite
 
-private val ICON_SIZE = 40.dp
+private val ICON_SIZE = 24.dp
 
 /** A simple hand-drawn monochrome glyph for the current conditions — no icon assets, matching the app's style. */
 @Composable

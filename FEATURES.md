@@ -21,6 +21,11 @@ one) before considering the work done.
   menus). [original]
 - [ ] No colored UI chrome — the only color variation is white vs. a dimmed
   white/grey for secondary text. [original]
+- [ ] Text size is uniform across a screen — no ad-hoc larger text (e.g. the
+  dashboard's weather line matches the date/time, location, and
+  notification text sizes, not an oversized one-off). Section icons (bell,
+  weather) are sized to match their adjacent text line, not the other way
+  around. [#9]
 
 ## Navigation
 
@@ -151,9 +156,11 @@ gated — the screen degrades gracefully without either.
 
 ### Date & time
 
-- [ ] Shows the current date and time in the device's own system
-  format/locale (respects the 12h/24h setting), independent of location
-  permission. [#7]
+- [ ] Shows the current date as day + full month name (e.g. "23 August" or
+  "August 23"), in whichever order the device's language/locale setting
+  prescribes — not a short numeric date, and no year. [#9]
+- [ ] Shows the current time in the device's own system format (respects
+  the 12h/24h setting), independent of location permission. [#7]
 - [ ] Updates live, at least once a minute. [#7]
 - [ ] Hidden when the **Show date** setting is off. [#7]
 - [ ] If the device's next alarm (`AlarmManager.getNextAlarmClock()`) is due
@@ -197,7 +204,9 @@ gated — the screen degrades gracefully without either.
 - [ ] A small map centered on the device's current location, sourced from
   raw OpenStreetMap tiles (no API key). [original, tile source per
   feedback]
-- [ ] Rendered full width of the screen, square aspect ratio. [feedback]
+- [ ] Inset by the same horizontal margin as the surrounding dashboard text
+  (32dp), square aspect ratio — supersedes an earlier "full width" choice
+  once the two turned out to conflict. [feedback, then #9]
 - [ ] Rendered in **greyscale**. [feedback]
 - [ ] A marker dot shows the exact current-location point on the map.
 - [ ] Tapping the map launches the user's configured maps app; if none is

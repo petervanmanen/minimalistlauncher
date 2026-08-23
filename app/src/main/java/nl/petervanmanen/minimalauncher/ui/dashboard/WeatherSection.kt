@@ -14,7 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import nl.petervanmanen.minimalauncher.data.model.WeatherInfo
 import nl.petervanmanen.minimalauncher.ui.theme.DimWhite
 
@@ -60,10 +59,10 @@ fun WeatherSection(
             weather != null -> {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     WeatherIcon(iconType = weather.iconType, isDay = weather.isDay)
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "${weather.temperatureCelsius.toInt()}° · ${weather.description}",
-                        fontSize = 32.sp,
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
                 weather.locationName?.let {
