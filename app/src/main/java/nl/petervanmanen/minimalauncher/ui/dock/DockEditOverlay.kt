@@ -42,6 +42,7 @@ import kotlin.math.roundToInt
 import nl.petervanmanen.minimalauncher.data.model.DockApp
 import nl.petervanmanen.minimalauncher.data.model.DockPage
 import nl.petervanmanen.minimalauncher.ui.components.PageIndicatorDots
+import nl.petervanmanen.minimalauncher.ui.settings.SettingsScreen
 import nl.petervanmanen.minimalauncher.ui.theme.DimWhite
 import nl.petervanmanen.minimalauncher.ui.theme.PureBlack
 import nl.petervanmanen.minimalauncher.ui.theme.PureWhite
@@ -50,12 +51,25 @@ import nl.petervanmanen.minimalauncher.ui.theme.PureWhite
 fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
     val dockConfig by viewModel.dockConfig.collectAsState()
     val showPicker by viewModel.showAddAppPicker.collectAsState()
+    val showSettings by viewModel.showSettings.collectAsState()
+    val allowRotation by viewModel.allowRotation.collectAsState()
     val page = dockConfig.pages.getOrElse(currentPageIndex) { DockPage() }
 
     Dialog(
         onDismissRequest = { viewModel.exitEditMode() },
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
+        if (showSettings) {
+            Surface(color = PureBlack, modifier = Modifier.fillMaxSize()) {
+                SettingsScreen(
+                    allowRotation = allowRotation,
+                    onAllowRotationChange = { viewModel.setAllowRotation(it) },
+                    onBack = { viewModel.closeSettings() },
+                )
+            }
+            return@Dialog
+        }
+
         Surface(color = PureBlack, modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -68,11 +82,20 @@ fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text("Edit dock", style = MaterialTheme.typography.bodyLarge)
-                    Text(
-                        text = "×",
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.clickable { viewModel.exitEditMode() },
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Settings",
+                            color = DimWhite,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.clickable { viewModel.openSettings() },
+                        )
+                        Spacer(modifier = Modifier.width(24.dp))
+                        Text(
+                            text = "×",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.clickable { viewModel.exitEditMode() },
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))

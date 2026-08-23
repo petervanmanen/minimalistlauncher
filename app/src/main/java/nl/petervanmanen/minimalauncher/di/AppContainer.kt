@@ -6,6 +6,7 @@ import nl.petervanmanen.minimalauncher.data.repository.AppRepository
 import nl.petervanmanen.minimalauncher.data.repository.DockRepository
 import nl.petervanmanen.minimalauncher.data.repository.MapRepository
 import nl.petervanmanen.minimalauncher.data.repository.NotificationRepository
+import nl.petervanmanen.minimalauncher.data.repository.SettingsRepository
 import nl.petervanmanen.minimalauncher.data.repository.WeatherRepository
 import nl.petervanmanen.minimalauncher.location.LocationProvider
 
@@ -18,4 +19,5 @@ class AppContainer(context: Context) {
     val mapRepository = MapRepository()
     val notificationRepository = NotificationRepository(context)
     val appLinkRepository = AppLinkRepository(context)
+    val settingsRepository = SettingsRepository(context)
 }

@@ -13,11 +13,13 @@ import nl.petervanmanen.minimalauncher.data.model.DockConfig
 import nl.petervanmanen.minimalauncher.data.model.InstalledApp
 import nl.petervanmanen.minimalauncher.data.repository.AppRepository
 import nl.petervanmanen.minimalauncher.data.repository.DockRepository
+import nl.petervanmanen.minimalauncher.data.repository.SettingsRepository
 import nl.petervanmanen.minimalauncher.data.util.defaultDisplayNameFor
 
 class DockViewModel(
     private val dockRepository: DockRepository,
     appRepository: AppRepository,
+    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
 
     val dockConfig: StateFlow<DockConfig> = dockRepository.dockConfig
@@ -25,11 +27,17 @@ class DockViewModel(
 
     val installedApps: StateFlow<List<InstalledApp>> = appRepository.installedApps
 
+    val allowRotation: StateFlow<Boolean> = settingsRepository.allowRotation
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
     private val _isEditing = MutableStateFlow(false)
     val isEditing: StateFlow<Boolean> = _isEditing.asStateFlow()
 
     private val _showAddAppPicker = MutableStateFlow(false)
     val showAddAppPicker: StateFlow<Boolean> = _showAddAppPicker.asStateFlow()
+
+    private val _showSettings = MutableStateFlow(false)
+    val showSettings: StateFlow<Boolean> = _showSettings.asStateFlow()
 
     fun enterEditMode() {
         _isEditing.value = true
@@ -38,6 +46,19 @@ class DockViewModel(
     fun exitEditMode() {
         _isEditing.value = false
         _showAddAppPicker.value = false
+        _showSettings.value = false
+    }
+
+    fun openSettings() {
+        _showSettings.value = true
+    }
+
+    fun closeSettings() {
+        _showSettings.value = false
+    }
+
+    fun setAllowRotation(allow: Boolean) = viewModelScope.launch {
+        settingsRepository.setAllowRotation(allow)
     }
 
     fun openAddAppPicker() {
