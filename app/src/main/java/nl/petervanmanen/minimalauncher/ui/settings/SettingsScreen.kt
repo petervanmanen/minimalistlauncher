@@ -12,11 +12,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import nl.petervanmanen.minimalauncher.data.util.setBlackWallpaper
 import nl.petervanmanen.minimalauncher.ui.theme.DimWhite
 import nl.petervanmanen.minimalauncher.ui.theme.PureWhite
+
+private enum class WallpaperStatus { IDLE, SETTING, DONE, FAILED }
 
 @Composable
 fun SettingsScreen(
@@ -25,6 +36,10 @@ fun SettingsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    var wallpaperStatus by remember { mutableStateOf(WallpaperStatus.IDLE) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -50,6 +65,35 @@ fun SettingsScreen(
                 text = if (allowRotation) "On" else "Off",
                 style = MaterialTheme.typography.bodyLarge,
                 color = if (allowRotation) PureWhite else DimWhite,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(enabled = wallpaperStatus != WallpaperStatus.SETTING) {
+                    wallpaperStatus = WallpaperStatus.SETTING
+                    coroutineScope.launch {
+                        wallpaperStatus = if (setBlackWallpaper(context)) WallpaperStatus.DONE else WallpaperStatus.FAILED
+                        delay(2000)
+                        wallpaperStatus = WallpaperStatus.IDLE
+                    }
+                },
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(text = "Set black wallpaper", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = when (wallpaperStatus) {
+                    WallpaperStatus.IDLE -> ""
+                    WallpaperStatus.SETTING -> "…"
+                    WallpaperStatus.DONE -> "Done"
+                    WallpaperStatus.FAILED -> "Failed"
+                },
+                style = MaterialTheme.typography.bodyLarge,
+                color = DimWhite,
             )
         }
     }

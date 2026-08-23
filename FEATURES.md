@@ -90,6 +90,11 @@ The app is one `HorizontalPager` of three screens, dock in the center
   sensor orientation, live, without restarting the app. [#5]
 - [ ] Turning it back Off immediately re-locks to portrait. [#5]
 - [ ] The choice persists across app restarts (DataStore).
+- [ ] **Set black wallpaper** action sets a pure black wallpaper (home and
+  lock screen) in one tap, via `WallpaperManager` — no extra permission
+  prompt, since `SET_WALLPAPER` is a normal manifest permission. Shows
+  transient "…" / "Done" / "Failed" feedback next to the label, then clears
+  after a couple seconds.
 
 ## All Apps screen
 

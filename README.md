@@ -21,6 +21,9 @@ link on your phone (or transfer the file over) and tap to install — see
 - **Long-press** anywhere on an empty area of the dock to edit it: rename an
   app (tap its name), remove it (tap "−"), drag "≡" to reorder, "+ Add app" to
   add one from the full app list, or add/remove dock pages.
+- **Settings** live inside that same dock editor — tap "Settings" next to the
+  "×" in its header. From there: toggle whether the app follows the device's
+  rotation (off by default), and set a pure black wallpaper in one tap.
 
 ## Screens
 
