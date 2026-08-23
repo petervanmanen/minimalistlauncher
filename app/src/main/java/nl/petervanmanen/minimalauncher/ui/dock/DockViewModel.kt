@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import nl.petervanmanen.minimalauncher.data.model.DockApp
 import nl.petervanmanen.minimalauncher.data.model.DockConfig
 import nl.petervanmanen.minimalauncher.data.model.InstalledApp
+import nl.petervanmanen.minimalauncher.data.repository.AppLinkRepository
 import nl.petervanmanen.minimalauncher.data.repository.AppRepository
 import nl.petervanmanen.minimalauncher.data.repository.DockRepository
 import nl.petervanmanen.minimalauncher.data.repository.SettingsRepository
@@ -20,6 +21,7 @@ class DockViewModel(
     private val dockRepository: DockRepository,
     appRepository: AppRepository,
     private val settingsRepository: SettingsRepository,
+    private val appLinkRepository: AppLinkRepository,
 ) : ViewModel() {
 
     val dockConfig: StateFlow<DockConfig> = dockRepository.dockConfig
@@ -29,6 +31,19 @@ class DockViewModel(
 
     val allowRotation: StateFlow<Boolean> = settingsRepository.allowRotation
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+    val showWeather: StateFlow<Boolean> = settingsRepository.showWeather
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+    val showMap: StateFlow<Boolean> = settingsRepository.showMap
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+    val showDate: StateFlow<Boolean> = settingsRepository.showDate
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+
+    val mapsAppPackage: StateFlow<String?> = appLinkRepository.mapsAppPackage
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+    val weatherAppPackage: StateFlow<String?> = appLinkRepository.weatherAppPackage
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+    val dateAppPackage: StateFlow<String?> = appLinkRepository.dateAppPackage
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     private val _isEditing = MutableStateFlow(false)
     val isEditing: StateFlow<Boolean> = _isEditing.asStateFlow()
@@ -60,6 +75,18 @@ class DockViewModel(
     fun setAllowRotation(allow: Boolean) = viewModelScope.launch {
         settingsRepository.setAllowRotation(allow)
     }
+
+    fun setShowWeather(show: Boolean) = viewModelScope.launch { settingsRepository.setShowWeather(show) }
+
+    fun setShowMap(show: Boolean) = viewModelScope.launch { settingsRepository.setShowMap(show) }
+
+    fun setShowDate(show: Boolean) = viewModelScope.launch { settingsRepository.setShowDate(show) }
+
+    fun setMapsApp(packageName: String) = viewModelScope.launch { appLinkRepository.setMapsApp(packageName) }
+
+    fun setWeatherApp(packageName: String) = viewModelScope.launch { appLinkRepository.setWeatherApp(packageName) }
+
+    fun setDateApp(packageName: String) = viewModelScope.launch { appLinkRepository.setDateApp(packageName) }
 
     fun openAddAppPicker() {
         _showAddAppPicker.value = true

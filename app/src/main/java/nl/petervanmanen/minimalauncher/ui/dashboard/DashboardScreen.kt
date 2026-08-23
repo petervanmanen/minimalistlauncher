@@ -29,7 +29,7 @@ import nl.petervanmanen.minimalauncher.data.util.launchApp
 import nl.petervanmanen.minimalauncher.location.hasLocationPermission
 import nl.petervanmanen.minimalauncher.ui.components.AppPickerScreen
 
-private enum class DashboardLink { MAPS, WEATHER }
+private enum class DashboardLink { MAPS, WEATHER, DATE }
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -67,6 +67,10 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
     val installedApps by viewModel.installedApps.collectAsState()
     val mapsAppPackage by viewModel.mapsAppPackage.collectAsState()
     val weatherAppPackage by viewModel.weatherAppPackage.collectAsState()
+    val dateAppPackage by viewModel.dateAppPackage.collectAsState()
+    val showWeather by viewModel.showWeather.collectAsState()
+    val showMap by viewModel.showMap.collectAsState()
+    val showDate by viewModel.showDate.collectAsState()
 
     configuringLink?.let { link ->
         AppPickerScreen(
@@ -75,6 +79,7 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
                 when (link) {
                     DashboardLink.MAPS -> viewModel.setMapsApp(app.packageName)
                     DashboardLink.WEATHER -> viewModel.setWeatherApp(app.packageName)
+                    DashboardLink.DATE -> viewModel.setDateApp(app.packageName)
                 }
                 configuringLink = null
             },
@@ -83,40 +88,60 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
         return
     }
 
+    var isFirstSection = true
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(vertical = 56.dp),
     ) {
-        WeatherSection(
-            hasLocationPermission = hasLocationPermission,
-            weather = weather,
-            isLoading = isLoadingLocationData,
-            onRequestLocationPermission = {
-                locationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-            },
-            onClick = {
-                val pkg = weatherAppPackage
-                if (pkg != null) launchApp(context, pkg) else configuringLink = DashboardLink.WEATHER
-            },
-            onLongClick = { configuringLink = DashboardLink.WEATHER },
-            modifier = Modifier.padding(horizontal = 32.dp),
-        )
+        if (showDate) {
+            isFirstSection = false
+            DateTimeSection(
+                onClick = {
+                    val pkg = dateAppPackage
+                    if (pkg != null) launchApp(context, pkg) else configuringLink = DashboardLink.DATE
+                },
+                onLongClick = { configuringLink = DashboardLink.DATE },
+                modifier = Modifier.padding(horizontal = 32.dp),
+            )
+        }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        if (showWeather) {
+            if (!isFirstSection) Spacer(modifier = Modifier.height(24.dp))
+            isFirstSection = false
+            WeatherSection(
+                hasLocationPermission = hasLocationPermission,
+                weather = weather,
+                isLoading = isLoadingLocationData,
+                onRequestLocationPermission = {
+                    locationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                },
+                onClick = {
+                    val pkg = weatherAppPackage
+                    if (pkg != null) launchApp(context, pkg) else configuringLink = DashboardLink.WEATHER
+                },
+                onLongClick = { configuringLink = DashboardLink.WEATHER },
+                modifier = Modifier.padding(horizontal = 32.dp),
+            )
+        }
 
-        MapSection(
-            hasLocationPermission = hasLocationPermission,
-            mapSnapshot = mapSnapshot,
-            isLoading = isLoadingLocationData,
-            onClick = {
-                val pkg = mapsAppPackage
-                if (pkg != null) launchApp(context, pkg) else configuringLink = DashboardLink.MAPS
-            },
-            onLongClick = { configuringLink = DashboardLink.MAPS },
-        )
+        if (showMap) {
+            if (!isFirstSection) Spacer(modifier = Modifier.height(24.dp))
+            isFirstSection = false
+            MapSection(
+                hasLocationPermission = hasLocationPermission,
+                mapSnapshot = mapSnapshot,
+                isLoading = isLoadingLocationData,
+                onClick = {
+                    val pkg = mapsAppPackage
+                    if (pkg != null) launchApp(context, pkg) else configuringLink = DashboardLink.MAPS
+                },
+                onLongClick = { configuringLink = DashboardLink.MAPS },
+            )
+        }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        if (!isFirstSection) Spacer(modifier = Modifier.height(24.dp))
 
         NotificationsSection(
             isAccessGranted = isNotificationAccessGranted,

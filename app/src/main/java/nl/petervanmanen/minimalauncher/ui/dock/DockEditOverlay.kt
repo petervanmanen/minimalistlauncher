@@ -53,6 +53,13 @@ fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
     val showPicker by viewModel.showAddAppPicker.collectAsState()
     val showSettings by viewModel.showSettings.collectAsState()
     val allowRotation by viewModel.allowRotation.collectAsState()
+    val showWeather by viewModel.showWeather.collectAsState()
+    val showMap by viewModel.showMap.collectAsState()
+    val showDate by viewModel.showDate.collectAsState()
+    val installedApps by viewModel.installedApps.collectAsState()
+    val mapsAppPackage by viewModel.mapsAppPackage.collectAsState()
+    val weatherAppPackage by viewModel.weatherAppPackage.collectAsState()
+    val dateAppPackage by viewModel.dateAppPackage.collectAsState()
     val page = dockConfig.pages.getOrElse(currentPageIndex) { DockPage() }
 
     Dialog(
@@ -64,6 +71,19 @@ fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
                 SettingsScreen(
                     allowRotation = allowRotation,
                     onAllowRotationChange = { viewModel.setAllowRotation(it) },
+                    showWeather = showWeather,
+                    onShowWeatherChange = { viewModel.setShowWeather(it) },
+                    showMap = showMap,
+                    onShowMapChange = { viewModel.setShowMap(it) },
+                    showDate = showDate,
+                    onShowDateChange = { viewModel.setShowDate(it) },
+                    installedApps = installedApps,
+                    mapsAppPackage = mapsAppPackage,
+                    onMapsAppChange = { app -> viewModel.setMapsApp(app.packageName) },
+                    weatherAppPackage = weatherAppPackage,
+                    onWeatherAppChange = { app -> viewModel.setWeatherApp(app.packageName) },
+                    dateAppPackage = dateAppPackage,
+                    onDateAppChange = { app -> viewModel.setDateApp(app.packageName) },
                     onBack = { viewModel.closeSettings() },
                 )
             }

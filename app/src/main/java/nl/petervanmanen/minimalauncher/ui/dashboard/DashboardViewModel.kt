@@ -18,6 +18,7 @@ import nl.petervanmanen.minimalauncher.data.repository.AppLinkRepository
 import nl.petervanmanen.minimalauncher.data.repository.AppRepository
 import nl.petervanmanen.minimalauncher.data.repository.MapRepository
 import nl.petervanmanen.minimalauncher.data.repository.NotificationRepository
+import nl.petervanmanen.minimalauncher.data.repository.SettingsRepository
 import nl.petervanmanen.minimalauncher.data.repository.WeatherRepository
 import nl.petervanmanen.minimalauncher.location.LocationProvider
 
@@ -27,6 +28,7 @@ class DashboardViewModel(
     private val mapRepository: MapRepository,
     private val notificationRepository: NotificationRepository,
     private val appLinkRepository: AppLinkRepository,
+    private val settingsRepository: SettingsRepository,
     appRepository: AppRepository,
 ) : ViewModel() {
 
@@ -47,6 +49,15 @@ class DashboardViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
     val weatherAppPackage: StateFlow<String?> = appLinkRepository.weatherAppPackage
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+    val dateAppPackage: StateFlow<String?> = appLinkRepository.dateAppPackage
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    val showWeather: StateFlow<Boolean> = settingsRepository.showWeather
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+    val showMap: StateFlow<Boolean> = settingsRepository.showMap
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+    val showDate: StateFlow<Boolean> = settingsRepository.showDate
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
 
     fun isNotificationAccessGranted(): Boolean = notificationRepository.isListenerConnected()
 
@@ -71,4 +82,6 @@ class DashboardViewModel(
     fun setMapsApp(packageName: String) = viewModelScope.launch { appLinkRepository.setMapsApp(packageName) }
 
     fun setWeatherApp(packageName: String) = viewModelScope.launch { appLinkRepository.setWeatherApp(packageName) }
+
+    fun setDateApp(packageName: String) = viewModelScope.launch { appLinkRepository.setDateApp(packageName) }
 }

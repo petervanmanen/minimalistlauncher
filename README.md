@@ -23,7 +23,9 @@ link on your phone (or transfer the file over) and tap to install — see
   add one from the full app list, or add/remove dock pages.
 - **Settings** live inside that same dock editor — tap "Settings" next to the
   "×" in its header. From there: toggle whether the app follows the device's
-  rotation (off by default), and set a pure black wallpaper in one tap.
+  rotation (off by default), show/hide the weather, map, and date sections
+  independently, choose which app opens each of them, and set a pure black
+  wallpaper in one tap.
 
 ## Screens
 
@@ -32,7 +34,7 @@ The app is one horizontal row of three screens, with the dock in the middle:
 | Left — **Dashboard** | Center — **Dock** | Right — **All Apps** |
 | :---: | :---: | :---: |
 | ![Dashboard screen](docs/screenshots/left-dashboard.png) | ![Dock screen](docs/screenshots/center-dock.png) | ![All Apps screen](docs/screenshots/right-allapps.png) |
-| Weather, a small map centered on your current location, and notifications (tap to expand, tap again to open the app). Reached by swiping right from the dock. | Your chosen apps, text-only, across one or more vertical pages. The home screen. | Every installed app, alphabetically. Reached by swiping left from the dock. |
+| The date and time, weather, a small map centered on your current location, and notifications (tap to expand, tap again to open the app). Each section can be hidden and its tap target configured from Settings. Reached by swiping right from the dock. | Your chosen apps, text-only, across one or more vertical pages. The home screen. | Every installed app, alphabetically. Reached by swiping left from the dock. |
 
 ## Building
 

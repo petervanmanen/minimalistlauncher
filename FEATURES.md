@@ -95,6 +95,16 @@ The app is one `HorizontalPager` of three screens, dock in the center
   prompt, since `SET_WALLPAPER` is a normal manifest permission. Shows
   transient "…" / "Done" / "Failed" feedback next to the label, then clears
   after a couple seconds.
+- [ ] **Show weather** / **Show map** / **Show date** toggles, each default
+  **On**, independently show/hide their dashboard section regardless of
+  location permission state. [#7]
+- [ ] **Maps app** / **Weather app** / **Date app** rows show the currently
+  configured app's label (or "Not set"), and tapping opens the same
+  alphabetical app picker used elsewhere to change it — a second way to
+  reach the same configuration as tapping/long-pressing the section
+  directly on the dashboard (#1). [#7]
+- [ ] All four toggles and all three app-link choices persist across app
+  restarts (DataStore). [#7]
 
 ## All Apps screen
 
@@ -139,8 +149,22 @@ The app is one `HorizontalPager` of three screens, dock in the center
 Location and notification access are each optional and independently
 gated — the screen degrades gracefully without either.
 
+### Date & time
+
+- [ ] Shows the current date and time in the device's own system
+  format/locale (respects the 12h/24h setting), independent of location
+  permission. [#7]
+- [ ] Updates live, at least once a minute. [#7]
+- [ ] Hidden when the **Show date** setting is off. [#7]
+- [ ] Tapping launches the user's configured date app; if none is
+  configured yet, it opens the app picker instead. [#7]
+- [ ] Long-pressing always opens the app picker, even if one is already
+  configured. [#7]
+
 ### Weather
 
+- [ ] Hidden when the **Show weather** setting is off, regardless of
+  location permission state. [#7]
 - [ ] If location permission isn't granted, shows "Enable location";
   tapping requests the permission. [original]
 - [ ] Once granted, fetches and shows current temperature + short
@@ -162,8 +186,10 @@ gated — the screen degrades gracefully without either.
 
 ### Map
 
-- [ ] Shown only when location permission is granted (no separate opt-in —
-  same permission as weather). [original]
+- [ ] Hidden when the **Show map** setting is off, regardless of location
+  permission state. [#7]
+- [ ] Otherwise shown only when location permission is granted (no separate
+  opt-in — same permission as weather). [original]
 - [ ] A small map centered on the device's current location, sourced from
   raw OpenStreetMap tiles (no API key). [original, tile source per
   feedback]
@@ -177,16 +203,15 @@ gated — the screen degrades gracefully without either.
 - [ ] Weather and map share a single location fetch per refresh (not two
   independent GPS reads).
 
-### App link picker (Maps / Weather)
+### App link picker (Maps / Weather / Date)
 
-- [ ] Reachable only via tap-when-unconfigured or long-press on the
-  relevant dashboard section — no separate settings entry. [#1]
+- [ ] Reachable via tap-when-unconfigured or long-press on the relevant
+  dashboard section [#1], and also via the matching row in Settings [#7].
 - [ ] Presents the same alphabetical, no-icon app list used elsewhere;
-  selecting an app saves it as that link's target and returns to the
-  dashboard. [#1]
+  selecting an app saves it as that link's target. [#1]
 - [ ] The choice persists across app restarts (DataStore) and is
-  independent per link (maps app and weather app are configured
-  separately). [#1]
+  independent per link (maps, weather, and date apps are configured
+  separately). [#1, #7]
 
 ### Notifications
 
