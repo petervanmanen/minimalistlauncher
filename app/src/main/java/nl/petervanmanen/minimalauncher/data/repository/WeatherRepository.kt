@@ -1,7 +1,6 @@
 package nl.petervanmanen.minimalauncher.data.repository
 
-import android.Manifest
-import androidx.annotation.RequiresPermission
+import android.location.Location
 import nl.petervanmanen.minimalauncher.data.model.WeatherInfo
 import nl.petervanmanen.minimalauncher.data.remote.OpenMeteoApi
 import nl.petervanmanen.minimalauncher.data.remote.describeWeatherCode
@@ -11,9 +10,7 @@ class WeatherRepository(
     private val locationProvider: LocationProvider,
     private val api: OpenMeteoApi = OpenMeteoApi(),
 ) {
-    @RequiresPermission(anyOf = [Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION])
-    suspend fun getCurrentWeather(): WeatherInfo? {
-        val location = locationProvider.getCurrentLocation() ?: return null
+    suspend fun getCurrentWeather(location: Location): WeatherInfo? {
         val response = runCatching {
             api.getCurrentWeather(location.latitude, location.longitude)
         }.getOrNull() ?: return null

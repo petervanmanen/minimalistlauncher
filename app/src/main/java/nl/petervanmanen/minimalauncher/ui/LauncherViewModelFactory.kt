@@ -10,5 +10,12 @@ import nl.petervanmanen.minimalauncher.ui.dock.DockViewModel
 fun launcherViewModelFactory(container: AppContainer) = viewModelFactory {
     initializer { DockViewModel(container.dockRepository, container.appRepository) }
     initializer { AllAppsViewModel(container.appRepository) }
-    initializer { DashboardViewModel(container.weatherRepository, container.notificationRepository) }
+    initializer {
+        DashboardViewModel(
+            container.locationProvider,
+            container.weatherRepository,
+            container.mapRepository,
+            container.notificationRepository,
+        )
+    }
 }

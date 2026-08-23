@@ -14,8 +14,11 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Locale
 import kotlin.coroutines.resume
+
+private const val LOCATION_TIMEOUT_MS = 10_000L
 
 fun hasLocationPermission(context: Context): Boolean =
     ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ==
@@ -25,13 +28,16 @@ class LocationProvider(private val context: Context) {
 
     private val fusedClient = LocationServices.getFusedLocationProviderClient(context)
 
+    /** Null if no permission, no fix could be obtained, or none arrived within [LOCATION_TIMEOUT_MS]. */
     @RequiresPermission(anyOf = [Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION])
-    suspend fun getCurrentLocation(): Location? = suspendCancellableCoroutine { cont ->
-        val cancellationSource = CancellationTokenSource()
-        fusedClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, cancellationSource.token)
-            .addOnSuccessListener { location -> if (cont.isActive) cont.resume(location) }
-            .addOnFailureListener { if (cont.isActive) cont.resume(null) }
-        cont.invokeOnCancellation { cancellationSource.cancel() }
+    suspend fun getCurrentLocation(): Location? = withTimeoutOrNull(LOCATION_TIMEOUT_MS) {
+        suspendCancellableCoroutine { cont ->
+            val cancellationSource = CancellationTokenSource()
+            fusedClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, cancellationSource.token)
+                .addOnSuccessListener { location -> if (cont.isActive) cont.resume(location) }
+                .addOnFailureListener { if (cont.isActive) cont.resume(null) }
+            cont.invokeOnCancellation { cancellationSource.cancel() }
+        }
     }
 
     /** City/locality name for the given coordinates, or null if it can't be resolved. */

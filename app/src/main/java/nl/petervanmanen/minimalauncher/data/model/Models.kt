@@ -1,6 +1,8 @@
 package nl.petervanmanen.minimalauncher.data.model
 
 import android.app.PendingIntent
+import android.graphics.Bitmap
+import androidx.compose.ui.geometry.Offset
 import kotlinx.serialization.Serializable
 
 /**
@@ -38,6 +40,12 @@ data class WeatherInfo(
     val temperatureCelsius: Double,
     val description: String,
     val locationName: String?,
+)
+
+/** A stitched-together set of map tiles centered near [markerOffsetPx], your position within it. */
+data class MapSnapshot(
+    val bitmap: Bitmap,
+    val markerOffsetPx: Offset,
 )
 
 data class NotificationEntry(

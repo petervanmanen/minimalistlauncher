@@ -16,7 +16,9 @@ class NotificationRepository(private val context: Context) {
 
     /** Opens the notification's own destination, falling back to just launching its app. */
     fun launch(entry: NotificationEntry) {
-        val sentOwnIntent = runCatching { entry.contentIntent?.send() }.isSuccess
+        // entry.contentIntent?.send() would report success even when contentIntent is
+        // null (the ?. short-circuits without throwing), silently skipping the fallback.
+        val sentOwnIntent = entry.contentIntent?.let { runCatching { it.send() }.isSuccess } ?: false
         if (!sentOwnIntent) {
             context.packageManager.getLaunchIntentForPackage(entry.packageName)?.let { launchIntent ->
                 launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

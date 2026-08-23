@@ -2,7 +2,8 @@
 
 A minimalistic Android home-screen launcher inspired by the Light Phone: a plain black
 screen, text-only app lists (no icons), a user-curated multi-page dock, a full
-alphabetical app list, and a dashboard with weather, location, and notifications.
+alphabetical app list, and a dashboard with weather, a small map of your current
+location, and notifications.
 
 ## Navigation
 
@@ -22,7 +23,7 @@ The app is one horizontal row of three screens, with the dock in the middle:
 | Left — **Dashboard** | Center — **Dock** | Right — **All Apps** |
 | :---: | :---: | :---: |
 | ![Dashboard screen](docs/screenshots/left-dashboard.png) | ![Dock screen](docs/screenshots/center-dock.png) | ![All Apps screen](docs/screenshots/right-allapps.png) |
-| Weather, current location, and notifications. Reached by swiping right from the dock. | Your chosen apps, text-only, across one or more vertical pages. The home screen. | Every installed app, alphabetically. Reached by swiping left from the dock. |
+| Weather, a small map centered on your current location, and notifications (tap to expand, tap again to open the app). Reached by swiping right from the dock. | Your chosen apps, text-only, across one or more vertical pages. The home screen. | Every installed app, alphabetically. Reached by swiping left from the dock. |
 
 ## Building
 
@@ -63,5 +64,7 @@ pushes to `main` — publishes it to a rolling "latest" GitHub Release.
 - Weather comes from the free, no-API-key
   [Open-Meteo](https://open-meteo.com/) API; location comes from
   `FusedLocationProviderClient`, with on-device `Geocoder` for the city name.
+- The map is a small stitched grid of raw [OpenStreetMap](https://www.openstreetmap.org/)
+  tiles — no API key, matching the same zero-config approach as weather.
 - Notifications are read via a `NotificationListenerService`, which requires
   a one-time manual permission grant in Android's Settings.

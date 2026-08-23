@@ -52,11 +52,12 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
     }
 
     LaunchedEffect(hasLocationPermission) {
-        if (hasLocationPermission) viewModel.refreshWeather()
+        if (hasLocationPermission) viewModel.refreshLocationData()
     }
 
     val weather by viewModel.weather.collectAsState()
-    val isLoadingWeather by viewModel.isLoadingWeather.collectAsState()
+    val mapSnapshot by viewModel.mapSnapshot.collectAsState()
+    val isLoadingLocationData by viewModel.isLoadingLocationData.collectAsState()
     val notifications by viewModel.notifications.collectAsState()
 
     Column(
@@ -67,13 +68,21 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
         WeatherSection(
             hasLocationPermission = hasLocationPermission,
             weather = weather,
-            isLoading = isLoadingWeather,
+            isLoading = isLoadingLocationData,
             onRequestLocationPermission = {
                 locationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
             },
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        MapSection(
+            hasLocationPermission = hasLocationPermission,
+            mapSnapshot = mapSnapshot,
+            isLoading = isLoadingLocationData,
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         NotificationsSection(
             isAccessGranted = isNotificationAccessGranted,
