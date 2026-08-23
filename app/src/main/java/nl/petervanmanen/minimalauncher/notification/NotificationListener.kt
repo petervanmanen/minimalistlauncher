@@ -7,6 +7,9 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import nl.petervanmanen.minimalauncher.data.model.NotificationEntry
 
+/** OS/System UI chrome — status messages, not app notifications a user would tap through to. */
+private val SYSTEM_PACKAGES = setOf("android", "com.android.systemui")
+
 class NotificationListener : NotificationListenerService() {
 
     override fun onListenerConnected() {
@@ -26,7 +29,11 @@ class NotificationListener : NotificationListenerService() {
 
     private fun publish() {
         val entries = runCatching { activeNotifications }.getOrNull()
-            ?.filterNot { it.isOngoing || (it.notification.flags and Notification.FLAG_GROUP_SUMMARY) != 0 }
+            ?.filterNot {
+                it.isOngoing ||
+                    it.packageName in SYSTEM_PACKAGES ||
+                    (it.notification.flags and Notification.FLAG_GROUP_SUMMARY) != 0
+            }
             ?.mapNotNull(::toEntry)
             ?.sortedByDescending { it.postTime }
             .orEmpty()
