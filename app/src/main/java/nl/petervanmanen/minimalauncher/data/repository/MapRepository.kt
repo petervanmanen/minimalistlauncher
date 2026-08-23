@@ -11,15 +11,10 @@ import io.ktor.client.engine.android.Android
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.floor
-import kotlin.math.ln
-import kotlin.math.pow
-import kotlin.math.tan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import nl.petervanmanen.minimalauncher.data.model.MapSnapshot
+import nl.petervanmanen.minimalauncher.data.util.SlippyMap
 
 private const val TILE_SIZE = 256
 private const val ZOOM = 16
@@ -37,13 +32,7 @@ class MapRepository(
 ) {
     suspend fun getLocationMap(location: Location): MapSnapshot? = withContext(Dispatchers.IO) {
         runCatching {
-            val n = 2.0.pow(ZOOM)
-            val xTileExact = (location.longitude + 180.0) / 360.0 * n
-            val latRad = Math.toRadians(location.latitude)
-            val yTileExact = (1.0 - ln(tan(latRad) + 1.0 / cos(latRad)) / PI) / 2.0 * n
-
-            val centerX = floor(xTileExact).toInt()
-            val centerY = floor(yTileExact).toInt()
+            val position = SlippyMap.locate(location.longitude, location.latitude, ZOOM, GRID_RADIUS, TILE_SIZE)
             val gridSize = GRID_RADIUS * 2 + 1
 
             val composite = Bitmap.createBitmap(
@@ -54,7 +43,7 @@ class MapRepository(
             val canvas = Canvas(composite)
             for (dy in -GRID_RADIUS..GRID_RADIUS) {
                 for (dx in -GRID_RADIUS..GRID_RADIUS) {
-                    val tile = fetchTile(ZOOM, centerX + dx, centerY + dy) ?: continue
+                    val tile = fetchTile(ZOOM, position.centerTileX + dx, position.centerTileY + dy) ?: continue
                     canvas.drawBitmap(
                         tile,
                         ((dx + GRID_RADIUS) * TILE_SIZE).toFloat(),
@@ -64,10 +53,10 @@ class MapRepository(
                 }
             }
 
-            val markerX = (xTileExact - centerX + GRID_RADIUS) * TILE_SIZE
-            val markerY = (yTileExact - centerY + GRID_RADIUS) * TILE_SIZE
-
-            MapSnapshot(bitmap = composite, markerOffsetPx = Offset(markerX.toFloat(), markerY.toFloat()))
+            MapSnapshot(
+                bitmap = composite,
+                markerOffsetPx = Offset(position.markerOffsetXPx.toFloat(), position.markerOffsetYPx.toFloat()),
+            )
         }.getOrNull()
     }
 

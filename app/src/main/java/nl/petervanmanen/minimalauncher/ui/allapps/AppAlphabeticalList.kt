@@ -33,14 +33,7 @@ fun AppAlphabeticalList(
     val coroutineScope = rememberCoroutineScope()
     var draggedLetter by remember { mutableStateOf<Char?>(null) }
 
-    val firstIndexOfLetter = remember(apps) {
-        val map = mutableMapOf<Char, Int>()
-        apps.forEachIndexed { index, app ->
-            val letter = app.label.firstOrNull()?.uppercaseChar() ?: return@forEachIndexed
-            map.getOrPut(letter) { index }
-        }
-        map
-    }
+    val firstIndexOfLetter = remember(apps) { firstIndexOfLetter(apps) }
     val availableLetters = remember(firstIndexOfLetter) { firstIndexOfLetter.keys }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -79,4 +72,14 @@ fun AppAlphabeticalList(
             modifier = Modifier.align(Alignment.Center),
         )
     }
+}
+
+/** The index of the first app whose label starts with each letter present, keyed by that uppercase letter. */
+internal fun firstIndexOfLetter(apps: List<InstalledApp>): Map<Char, Int> {
+    val map = mutableMapOf<Char, Int>()
+    apps.forEachIndexed { index, app ->
+        val letter = app.label.firstOrNull()?.uppercaseChar() ?: return@forEachIndexed
+        map.getOrPut(letter) { index }
+    }
+    return map
 }

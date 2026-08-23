@@ -56,4 +56,6 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
 
     implementation(libs.play.services.location)
+
+    testImplementation(libs.junit)
 }

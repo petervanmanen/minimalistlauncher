@@ -20,6 +20,17 @@ import nl.petervanmanen.minimalauncher.receiver.PackageChangeReceiver
 
 private val HIDDEN_PACKAGES_KEY = stringSetPreferencesKey("hidden_packages")
 
+/**
+ * False for non-updated system apps (e.g. Settings, the Phone dialer):
+ * Android itself refuses to uninstall those, and hiding them from the
+ * launcher risks stranding the user without access to core functionality.
+ */
+internal fun isRemovable(applicationInfoFlags: Int): Boolean {
+    val isSystemApp = (applicationInfoFlags and ApplicationInfo.FLAG_SYSTEM) != 0
+    val isUpdatedSystemApp = (applicationInfoFlags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
+    return !isSystemApp || isUpdatedSystemApp
+}
+
 /** Queries and keeps in sync the list of apps the device can launch. */
 class AppRepository(context: Context) {
 
@@ -64,23 +75,12 @@ class AppRepository(context: Context) {
                 InstalledApp(
                     packageName = activityInfo.packageName,
                     label = activityInfo.loadLabel(packageManager).toString(),
-                    canRemove = isRemovable(activityInfo.applicationInfo),
+                    canRemove = isRemovable(activityInfo.applicationInfo.flags),
                 )
             }
             .distinctBy { it.packageName }
             .sortedBy { it.label.lowercase() }
             .toList()
-    }
-
-    /**
-     * False for non-updated system apps (e.g. Settings, the Phone dialer):
-     * Android itself refuses to uninstall those, and hiding them from the
-     * launcher risks stranding the user without access to core functionality.
-     */
-    private fun isRemovable(appInfo: ApplicationInfo): Boolean {
-        val isSystemApp = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-        val isUpdatedSystemApp = (appInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
-        return !isSystemApp || isUpdatedSystemApp
     }
 
     @Suppress("DEPRECATION")

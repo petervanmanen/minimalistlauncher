@@ -10,7 +10,6 @@ import kotlinx.serialization.json.Json
 import nl.petervanmanen.minimalauncher.data.datastore.launcherDataStore
 import nl.petervanmanen.minimalauncher.data.model.DockApp
 import nl.petervanmanen.minimalauncher.data.model.DockConfig
-import nl.petervanmanen.minimalauncher.data.model.DockPage
 
 private val DOCK_CONFIG_KEY = stringPreferencesKey("dock_config_json")
 private val json = Json { ignoreUnknownKeys = true }
@@ -37,62 +36,22 @@ class DockRepository(private val context: Context) {
         }
     }
 
-    suspend fun addAppToPage(pageIndex: Int, app: DockApp) = update { config ->
-        config.withPages { pages ->
-            pages.mapIndexed { index, page ->
-                if (index == pageIndex && page.apps.none { it.packageName == app.packageName }) {
-                    page.copy(apps = page.apps + app)
-                } else {
-                    page
-                }
-            }
-        }
-    }
+    suspend fun addAppToPage(pageIndex: Int, app: DockApp) =
+        update { config -> DockConfigOperations.addAppToPage(config, pageIndex, app) }
 
-    suspend fun removeApp(packageName: String) = update { config ->
-        config.withPages { pages ->
-            pages.map { page -> page.copy(apps = page.apps.filterNot { it.packageName == packageName }) }
-        }
-    }
+    suspend fun removeApp(packageName: String) =
+        update { config -> DockConfigOperations.removeApp(config, packageName) }
 
-    suspend fun removePackages(packageNames: Set<String>) = update { config ->
-        config.withPages { pages ->
-            pages.map { page -> page.copy(apps = page.apps.filterNot { it.packageName in packageNames }) }
-        }
-    }
+    suspend fun removePackages(packageNames: Set<String>) =
+        update { config -> DockConfigOperations.removePackages(config, packageNames) }
 
-    suspend fun renameApp(packageName: String, newName: String) = update { config ->
-        config.withPages { pages ->
-            pages.map { page ->
-                page.copy(
-                    apps = page.apps.map { app ->
-                        if (app.packageName == packageName) app.copy(displayName = newName) else app
-                    }
-                )
-            }
-        }
-    }
+    suspend fun renameApp(packageName: String, newName: String) =
+        update { config -> DockConfigOperations.renameApp(config, packageName, newName) }
 
-    suspend fun reorderWithinPage(pageIndex: Int, fromIndex: Int, toIndex: Int) = update { config ->
-        config.withPages { pages ->
-            pages.mapIndexed { index, page ->
-                if (index != pageIndex) return@mapIndexed page
-                val apps = page.apps.toMutableList()
-                if (fromIndex !in apps.indices || toIndex !in apps.indices) return@mapIndexed page
-                val moved = apps.removeAt(fromIndex)
-                apps.add(toIndex, moved)
-                page.copy(apps = apps)
-            }
-        }
-    }
+    suspend fun reorderWithinPage(pageIndex: Int, fromIndex: Int, toIndex: Int) =
+        update { config -> DockConfigOperations.reorderWithinPage(config, pageIndex, fromIndex, toIndex) }
 
-    suspend fun addPage() = update { config -> config.copy(pages = config.pages + DockPage()) }
+    suspend fun addPage() = update { config -> DockConfigOperations.addPage(config) }
 
-    suspend fun removePage(pageIndex: Int) = update { config ->
-        if (config.pages.size <= 1) return@update config
-        config.copy(pages = config.pages.filterIndexed { index, _ -> index != pageIndex })
-    }
-
-    private inline fun DockConfig.withPages(transform: (List<DockPage>) -> List<DockPage>): DockConfig =
-        copy(pages = transform(pages))
+    suspend fun removePage(pageIndex: Int) = update { config -> DockConfigOperations.removePage(config, pageIndex) }
 }

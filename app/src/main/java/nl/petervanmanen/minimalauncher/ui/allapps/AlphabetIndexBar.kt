@@ -73,11 +73,11 @@ fun AlphabetIndexBar(
     }
 }
 
-private fun letterAt(y: Float, heightPx: Float): Char {
+internal fun letterAt(y: Float, heightPx: Float): Char {
     val rowHeight = heightPx / LETTERS.size
     val index = (y / rowHeight).toInt().coerceIn(0, LETTERS.lastIndex)
     return LETTERS[index]
 }
 
-private fun nearestAvailableLetter(target: Char, available: Set<Char>): Char? =
+internal fun nearestAvailableLetter(target: Char, available: Set<Char>): Char? =
     available.minByOrNull { abs(it - target) }
