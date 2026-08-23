@@ -56,6 +56,7 @@ fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
     val showWeather by viewModel.showWeather.collectAsState()
     val showMap by viewModel.showMap.collectAsState()
     val showDate by viewModel.showDate.collectAsState()
+    val hideStatusBar by viewModel.hideStatusBar.collectAsState()
     val installedApps by viewModel.installedApps.collectAsState()
     val mapsAppPackage by viewModel.mapsAppPackage.collectAsState()
     val weatherAppPackage by viewModel.weatherAppPackage.collectAsState()
@@ -77,6 +78,8 @@ fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
                     onShowMapChange = { viewModel.setShowMap(it) },
                     showDate = showDate,
                     onShowDateChange = { viewModel.setShowDate(it) },
+                    hideStatusBar = hideStatusBar,
+                    onHideStatusBarChange = { viewModel.setHideStatusBar(it) },
                     installedApps = installedApps,
                     mapsAppPackage = mapsAppPackage,
                     onMapsAppChange = { app -> viewModel.setMapsApp(app.packageName) },

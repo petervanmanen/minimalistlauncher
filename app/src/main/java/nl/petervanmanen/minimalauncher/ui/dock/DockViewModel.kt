@@ -37,6 +37,8 @@ class DockViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
     val showDate: StateFlow<Boolean> = settingsRepository.showDate
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+    val hideStatusBar: StateFlow<Boolean> = settingsRepository.hideStatusBar
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
 
     val mapsAppPackage: StateFlow<String?> = appLinkRepository.mapsAppPackage
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
@@ -81,6 +83,8 @@ class DockViewModel(
     fun setShowMap(show: Boolean) = viewModelScope.launch { settingsRepository.setShowMap(show) }
 
     fun setShowDate(show: Boolean) = viewModelScope.launch { settingsRepository.setShowDate(show) }
+
+    fun setHideStatusBar(hide: Boolean) = viewModelScope.launch { settingsRepository.setHideStatusBar(hide) }
 
     fun setMapsApp(packageName: String) = viewModelScope.launch { appLinkRepository.setMapsApp(packageName) }
 

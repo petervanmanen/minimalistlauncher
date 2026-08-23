@@ -24,8 +24,9 @@ link on your phone (or transfer the file over) and tap to install — see
 - **Settings** live inside that same dock editor — tap "Settings" next to the
   "×" in its header. From there: toggle whether the app follows the device's
   rotation (off by default), show/hide the weather, map, and date sections
-  independently, choose which app opens each of them, and set a pure black
-  wallpaper in one tap.
+  independently, hide the system status bar (on by default — swipe down
+  from the top edge to reveal it temporarily), choose which app opens each
+  dashboard section, and set a pure black wallpaper in one tap.
 
 ## Screens
 

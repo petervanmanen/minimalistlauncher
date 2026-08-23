@@ -42,6 +42,8 @@ fun SettingsScreen(
     onShowMapChange: (Boolean) -> Unit,
     showDate: Boolean,
     onShowDateChange: (Boolean) -> Unit,
+    hideStatusBar: Boolean,
+    onHideStatusBarChange: (Boolean) -> Unit,
     installedApps: List<InstalledApp>,
     mapsAppPackage: String?,
     onMapsAppChange: (InstalledApp) -> Unit,
@@ -96,6 +98,8 @@ fun SettingsScreen(
         ToggleRow("Show map", showMap, onShowMapChange)
         Spacer(modifier = Modifier.height(20.dp))
         ToggleRow("Show date", showDate, onShowDateChange)
+        Spacer(modifier = Modifier.height(20.dp))
+        ToggleRow("Hide status bar", hideStatusBar, onHideStatusBarChange)
 
         Spacer(modifier = Modifier.height(24.dp))
 

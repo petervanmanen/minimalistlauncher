@@ -11,6 +11,7 @@ private val ALLOW_ROTATION_KEY = booleanPreferencesKey("allow_rotation")
 private val SHOW_WEATHER_KEY = booleanPreferencesKey("show_weather")
 private val SHOW_MAP_KEY = booleanPreferencesKey("show_map")
 private val SHOW_DATE_KEY = booleanPreferencesKey("show_date")
+private val HIDE_STATUS_BAR_KEY = booleanPreferencesKey("hide_status_bar")
 
 /** Whether the launcher may rotate with the device (off by default), and which dashboard sections are shown. */
 class SettingsRepository(context: Context) {
@@ -20,6 +21,7 @@ class SettingsRepository(context: Context) {
     val showWeather: Flow<Boolean> = appContext.launcherDataStore.data.map { it[SHOW_WEATHER_KEY] ?: true }
     val showMap: Flow<Boolean> = appContext.launcherDataStore.data.map { it[SHOW_MAP_KEY] ?: true }
     val showDate: Flow<Boolean> = appContext.launcherDataStore.data.map { it[SHOW_DATE_KEY] ?: true }
+    val hideStatusBar: Flow<Boolean> = appContext.launcherDataStore.data.map { it[HIDE_STATUS_BAR_KEY] ?: true }
 
     suspend fun setAllowRotation(allow: Boolean) {
         appContext.launcherDataStore.edit { it[ALLOW_ROTATION_KEY] = allow }
@@ -35,5 +37,9 @@ class SettingsRepository(context: Context) {
 
     suspend fun setShowDate(show: Boolean) {
         appContext.launcherDataStore.edit { it[SHOW_DATE_KEY] = show }
+    }
+
+    suspend fun setHideStatusBar(hide: Boolean) {
+        appContext.launcherDataStore.edit { it[HIDE_STATUS_BAR_KEY] = hide }
     }
 }

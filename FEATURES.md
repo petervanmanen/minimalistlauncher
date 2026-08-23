@@ -103,6 +103,11 @@ The app is one `HorizontalPager` of three screens, dock in the center
 - [ ] **Show weather** / **Show map** / **Show date** toggles, each default
   **On**, independently show/hide their dashboard section regardless of
   location permission state. [#7]
+- [ ] **Hide status bar** toggle, default **On** (hidden by default for a
+  clean look). Applies live without restarting the app; swiping down from
+  the top edge still transiently reveals it (`BEHAVIOR_SHOW_TRANSIENT_BARS_
+  BY_SWIPE`), it doesn't lock the user out of quick settings/notifications
+  entirely. [#10]
 - [ ] **Maps app** / **Weather app** / **Date app** rows show the currently
   configured app's label (or "Not set"), and tapping opens the same
   alphabetical app picker used elsewhere to change it — a second way to
