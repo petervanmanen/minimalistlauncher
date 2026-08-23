@@ -63,7 +63,7 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 32.dp, vertical = 56.dp),
+            .padding(vertical = 56.dp),
     ) {
         WeatherSection(
             hasLocationPermission = hasLocationPermission,
@@ -72,6 +72,7 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
             onRequestLocationPermission = {
                 locationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
             },
+            modifier = Modifier.padding(horizontal = 32.dp),
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -91,7 +92,7 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
                 context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
             },
             onNotificationClick = { entry -> viewModel.launchNotification(entry) },
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).padding(horizontal = 32.dp),
         )
     }
 }
