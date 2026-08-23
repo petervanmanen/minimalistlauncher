@@ -1,7 +1,6 @@
 package nl.petervanmanen.minimalauncher.ui.allapps
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,30 +42,29 @@ fun AllAppsScreen(viewModel: AllAppsViewModel, modifier: Modifier = Modifier) {
         return
     }
 
-    Column(
+    AppAlphabeticalList(
+        apps = apps,
+        onAppClick = { app -> launchApp(context, app.packageName) },
+        onAppLongClick = { app -> selectedApp = app },
         modifier = modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.statusBars),
-    ) {
-        AppAlphabeticalList(
-            apps = apps,
-            onAppClick = { app -> launchApp(context, app.packageName) },
-            onAppLongClick = { app -> selectedApp = app },
-            modifier = Modifier.weight(1f),
-        )
-
-        if (hiddenApps.isNotEmpty()) {
-            Text(
-                text = "Hidden apps (${hiddenApps.size})",
-                color = DimWhite,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showHiddenApps = true }
-                    .padding(horizontal = 32.dp, vertical = 12.dp),
-            )
-        }
-    }
+        footer = if (hiddenApps.isNotEmpty()) {
+            {
+                Text(
+                    text = "Hidden apps (${hiddenApps.size})",
+                    color = DimWhite,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showHiddenApps = true }
+                        .padding(vertical = 12.dp),
+                )
+            }
+        } else {
+            null
+        },
+    )
 
     selectedApp?.let { app ->
         AppContextMenu(

@@ -21,6 +21,7 @@ fun AppAlphabeticalList(
     onAppClick: (InstalledApp) -> Unit,
     modifier: Modifier = Modifier,
     onAppLongClick: ((InstalledApp) -> Unit)? = null,
+    footer: (@Composable () -> Unit)? = null,
 ) {
     val listState = rememberLazyListState()
 
@@ -36,6 +37,9 @@ fun AppAlphabeticalList(
                     onClick = { onAppClick(app) },
                     onLongClick = onAppLongClick?.let { { it(app) } },
                 )
+            }
+            if (footer != null) {
+                item { footer() }
             }
         }
 
