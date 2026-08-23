@@ -33,6 +33,7 @@ fun MapSection(
     hasLocationPermission: Boolean,
     mapSnapshot: MapSnapshot?,
     isLoading: Boolean,
+    colorEnabled: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -62,7 +63,7 @@ fun MapSection(
                     contentDescription = null,
                     modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                     contentScale = ContentScale.Crop,
-                    colorFilter = greyscale,
+                    colorFilter = if (colorEnabled) null else greyscale,
                 )
                 Canvas(modifier = Modifier.fillMaxWidth().aspectRatio(1f)) {
                     val scaleX = size.width / bitmap.width

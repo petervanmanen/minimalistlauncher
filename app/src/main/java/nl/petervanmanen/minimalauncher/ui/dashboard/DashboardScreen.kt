@@ -56,7 +56,10 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    LaunchedEffect(hasLocationPermission) {
+    val mapSpanMeters by viewModel.mapSpanMeters.collectAsState()
+    val mapLayer by viewModel.mapLayer.collectAsState()
+
+    LaunchedEffect(hasLocationPermission, mapSpanMeters, mapLayer) {
         if (hasLocationPermission) viewModel.refreshLocationData()
     }
 
@@ -70,6 +73,7 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
     val dateAppPackage by viewModel.dateAppPackage.collectAsState()
     val showWeather by viewModel.showWeather.collectAsState()
     val showMap by viewModel.showMap.collectAsState()
+    val mapColorEnabled by viewModel.mapColorEnabled.collectAsState()
     val showDate by viewModel.showDate.collectAsState()
 
     configuringLink?.let { link ->
@@ -133,6 +137,7 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
                 hasLocationPermission = hasLocationPermission,
                 mapSnapshot = mapSnapshot,
                 isLoading = isLoadingLocationData,
+                colorEnabled = mapColorEnabled,
                 onClick = {
                     val pkg = mapsAppPackage
                     if (pkg != null) launchApp(context, pkg) else configuringLink = DashboardLink.MAPS

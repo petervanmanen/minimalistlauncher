@@ -24,11 +24,14 @@ link on your phone (or transfer the file over) and tap to install — see
 - **Settings** live inside that same dock editor — tap "Settings" next to the
   "×" in its header. From there: toggle whether the app follows the device's
   rotation (off by default), show/hide the weather, map, and date sections
-  independently, hide the system status bar (on by default — swipe down
-  from the top edge to reveal it temporarily), choose which app opens each
-  dashboard section, turn on a colored notification bubble next to an app's
-  name in the dock/all-apps list when it has a pending notification (off by
-  default), and set a pure black wallpaper in one tap.
+  independently, pick the map's zoom level (100m to 1000km, in your
+  device's own units), tile style (Standard/Humanitarian/Cycle/Topo), and
+  whether it's greyscale (default) or full color, hide the system status
+  bar (on by default — swipe down from the top edge to reveal it
+  temporarily), choose which app opens each dashboard section, turn on a
+  colored notification bubble next to an app's name in the dock/all-apps
+  list when it has a pending notification (off by default), and set a pure
+  black wallpaper in one tap.
 
 ## Screens
 

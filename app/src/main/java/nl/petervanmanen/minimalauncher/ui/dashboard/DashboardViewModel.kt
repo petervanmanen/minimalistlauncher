@@ -14,8 +14,10 @@ import nl.petervanmanen.minimalauncher.data.model.InstalledApp
 import nl.petervanmanen.minimalauncher.data.model.MapSnapshot
 import nl.petervanmanen.minimalauncher.data.model.NotificationEntry
 import nl.petervanmanen.minimalauncher.data.model.WeatherInfo
+import nl.petervanmanen.minimalauncher.data.remote.MapLayer
 import nl.petervanmanen.minimalauncher.data.repository.AppLinkRepository
 import nl.petervanmanen.minimalauncher.data.repository.AppRepository
+import nl.petervanmanen.minimalauncher.data.repository.DEFAULT_MAP_SPAN_METERS
 import nl.petervanmanen.minimalauncher.data.repository.MapRepository
 import nl.petervanmanen.minimalauncher.data.repository.NotificationRepository
 import nl.petervanmanen.minimalauncher.data.repository.SettingsRepository
@@ -58,6 +60,12 @@ class DashboardViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
     val showDate: StateFlow<Boolean> = settingsRepository.showDate
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+    val mapSpanMeters: StateFlow<Float> = settingsRepository.mapSpanMeters
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DEFAULT_MAP_SPAN_METERS)
+    val mapLayer: StateFlow<MapLayer> = settingsRepository.mapLayer
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MapLayer.STANDARD)
+    val mapColorEnabled: StateFlow<Boolean> = settingsRepository.mapColorEnabled
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     fun isNotificationAccessGranted(): Boolean = notificationRepository.isListenerConnected()
 
@@ -69,7 +77,7 @@ class DashboardViewModel(
             val location = locationProvider.getCurrentLocation()
             if (location != null) {
                 _weather.value = weatherRepository.getCurrentWeather(location)
-                _mapSnapshot.value = mapRepository.getLocationMap(location)
+                _mapSnapshot.value = mapRepository.getLocationMap(location, mapSpanMeters.value, mapLayer.value)
             }
             _isLoadingLocationData.value = false
         }

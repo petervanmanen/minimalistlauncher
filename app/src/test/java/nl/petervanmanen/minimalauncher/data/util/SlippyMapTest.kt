@@ -1,6 +1,7 @@
 package nl.petervanmanen.minimalauncher.data.util
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class SlippyMapTest {
@@ -48,5 +49,51 @@ class SlippyMapTest {
         // Doubling zoom doubles the tile grid resolution, so the center tile index roughly doubles too.
         assertEquals(zoom1.centerTileX * 2, zoom2.centerTileX)
         assertEquals(zoom1.centerTileY * 2, zoom2.centerTileY)
+    }
+
+    @Test
+    fun `zoomForSpan is 0 when the span matches the whole equatorial circumference`() {
+        val zoom = SlippyMap.zoomForSpan(spanMeters = 40_075_016.686, latitudeDegrees = 0.0, compositeSizePx = 256)
+
+        assertEquals(0, zoom)
+    }
+
+    @Test
+    fun `zoomForSpan increments once per halving of the span`() {
+        val zoom = SlippyMap.zoomForSpan(spanMeters = 40_075_016.686 / 1024, latitudeDegrees = 0.0, compositeSizePx = 256)
+
+        assertEquals(10, zoom)
+    }
+
+    @Test
+    fun `zoomForSpan is lower away from the equator for the same span`() {
+        // cos(60 deg) = 0.5, halving the effective meters-per-pixel scale versus the equator.
+        val equatorZoom = SlippyMap.zoomForSpan(spanMeters = 1000.0, latitudeDegrees = 0.0, compositeSizePx = 768)
+        val sixtyDegreesZoom = SlippyMap.zoomForSpan(spanMeters = 1000.0, latitudeDegrees = 60.0, compositeSizePx = 768)
+
+        assertEquals(equatorZoom - 1, sixtyDegreesZoom)
+    }
+
+    @Test
+    fun `zoomForSpan clamps to the given bounds instead of going out of range`() {
+        val tooClose = SlippyMap.zoomForSpan(spanMeters = 1.0, latitudeDegrees = 0.0, compositeSizePx = 768, minZoom = 0, maxZoom = 19)
+        val tooFar = SlippyMap.zoomForSpan(
+            spanMeters = 100_000_000.0,
+            latitudeDegrees = 0.0,
+            compositeSizePx = 768,
+            minZoom = 0,
+            maxZoom = 19,
+        )
+
+        assertEquals(19, tooClose)
+        assertEquals(0, tooFar)
+    }
+
+    @Test
+    fun `a larger requested span resolves to a lower zoom level`() {
+        val close = SlippyMap.zoomForSpan(spanMeters = 500.0, latitudeDegrees = 45.0, compositeSizePx = 768)
+        val far = SlippyMap.zoomForSpan(spanMeters = 500_000.0, latitudeDegrees = 45.0, compositeSizePx = 768)
+
+        assertTrue(far < close)
     }
 }

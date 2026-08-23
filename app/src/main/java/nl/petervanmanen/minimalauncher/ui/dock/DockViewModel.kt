@@ -12,8 +12,10 @@ import kotlinx.coroutines.launch
 import nl.petervanmanen.minimalauncher.data.model.DockApp
 import nl.petervanmanen.minimalauncher.data.model.DockConfig
 import nl.petervanmanen.minimalauncher.data.model.InstalledApp
+import nl.petervanmanen.minimalauncher.data.remote.MapLayer
 import nl.petervanmanen.minimalauncher.data.repository.AppLinkRepository
 import nl.petervanmanen.minimalauncher.data.repository.AppRepository
+import nl.petervanmanen.minimalauncher.data.repository.DEFAULT_MAP_SPAN_METERS
 import nl.petervanmanen.minimalauncher.data.repository.DEFAULT_NOTIFICATION_BUBBLE_COLOR
 import nl.petervanmanen.minimalauncher.data.repository.DockRepository
 import nl.petervanmanen.minimalauncher.data.repository.NotificationRepository
@@ -47,6 +49,12 @@ class DockViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
     val notificationBubbleColor: StateFlow<Int> = settingsRepository.notificationBubbleColor
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DEFAULT_NOTIFICATION_BUBBLE_COLOR)
+    val mapSpanMeters: StateFlow<Float> = settingsRepository.mapSpanMeters
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DEFAULT_MAP_SPAN_METERS)
+    val mapLayer: StateFlow<MapLayer> = settingsRepository.mapLayer
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MapLayer.STANDARD)
+    val mapColorEnabled: StateFlow<Boolean> = settingsRepository.mapColorEnabled
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     /** Packages with an active notification, only while the bubble setting is on — empty otherwise. */
     val packagesWithNotificationBubble: StateFlow<Set<String>> = combine(
@@ -108,6 +116,16 @@ class DockViewModel(
 
     fun setNotificationBubbleColor(color: Int) = viewModelScope.launch {
         settingsRepository.setNotificationBubbleColor(color)
+    }
+
+    fun setMapSpanMeters(spanMeters: Float) = viewModelScope.launch {
+        settingsRepository.setMapSpanMeters(spanMeters)
+    }
+
+    fun setMapLayer(layer: MapLayer) = viewModelScope.launch { settingsRepository.setMapLayer(layer) }
+
+    fun setMapColorEnabled(enabled: Boolean) = viewModelScope.launch {
+        settingsRepository.setMapColorEnabled(enabled)
     }
 
     fun setMapsApp(packageName: String) = viewModelScope.launch { appLinkRepository.setMapsApp(packageName) }

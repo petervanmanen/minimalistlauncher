@@ -15,9 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,9 +30,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import kotlin.math.ln
+import kotlin.math.pow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import nl.petervanmanen.minimalauncher.data.model.InstalledApp
+import nl.petervanmanen.minimalauncher.data.remote.MapLayer
+import nl.petervanmanen.minimalauncher.data.util.UnitSystem
+import nl.petervanmanen.minimalauncher.data.util.currentUnitSystem
+import nl.petervanmanen.minimalauncher.data.util.formatDistance
 import nl.petervanmanen.minimalauncher.data.util.setBlackWallpaper
 import nl.petervanmanen.minimalauncher.ui.components.AppPickerScreen
 import nl.petervanmanen.minimalauncher.ui.theme.DimWhite
@@ -47,6 +56,17 @@ private val BUBBLE_COLOR_PALETTE = listOf(
     0xFFAF52DE.toInt(), // purple
 )
 
+private const val MIN_MAP_SPAN_METERS = 100f
+private const val MAX_MAP_SPAN_METERS = 1_000_000f
+
+private fun spanToSliderPosition(spanMeters: Float): Float {
+    val t = ln(spanMeters / MIN_MAP_SPAN_METERS) / ln(MAX_MAP_SPAN_METERS / MIN_MAP_SPAN_METERS)
+    return t.coerceIn(0f, 1f)
+}
+
+private fun sliderPositionToSpan(position: Float): Float =
+    MIN_MAP_SPAN_METERS * (MAX_MAP_SPAN_METERS / MIN_MAP_SPAN_METERS).pow(position)
+
 @Composable
 fun SettingsScreen(
     allowRotation: Boolean,
@@ -55,6 +75,12 @@ fun SettingsScreen(
     onShowWeatherChange: (Boolean) -> Unit,
     showMap: Boolean,
     onShowMapChange: (Boolean) -> Unit,
+    mapSpanMeters: Float,
+    onMapSpanMetersChange: (Float) -> Unit,
+    mapLayer: MapLayer,
+    onMapLayerChange: (MapLayer) -> Unit,
+    mapColorEnabled: Boolean,
+    onMapColorEnabledChange: (Boolean) -> Unit,
     showDate: Boolean,
     onShowDateChange: (Boolean) -> Unit,
     hideStatusBar: Boolean,
@@ -115,6 +141,12 @@ fun SettingsScreen(
         ToggleRow("Show weather", showWeather, onShowWeatherChange)
         Spacer(modifier = Modifier.height(20.dp))
         ToggleRow("Show map", showMap, onShowMapChange)
+        Spacer(modifier = Modifier.height(20.dp))
+        MapSpanSlider(mapSpanMeters, currentUnitSystem(context), onMapSpanMetersChange)
+        Spacer(modifier = Modifier.height(20.dp))
+        MapLayerPicker(mapLayer, onMapLayerChange)
+        Spacer(modifier = Modifier.height(20.dp))
+        ToggleRow("Map color", mapColorEnabled, onMapColorEnabledChange)
         Spacer(modifier = Modifier.height(20.dp))
         ToggleRow("Show date", showDate, onShowDateChange)
         Spacer(modifier = Modifier.height(20.dp))
@@ -178,6 +210,56 @@ private fun ToggleRow(label: String, value: Boolean, onChange: (Boolean) -> Unit
             style = MaterialTheme.typography.bodyLarge,
             color = if (value) PureWhite else DimWhite,
         )
+    }
+}
+
+/** Log-scale slider from 100m to 1000km; only persists the value once the drag ends. */
+@Composable
+private fun MapSpanSlider(spanMeters: Float, unitSystem: UnitSystem, onSpanChange: (Float) -> Unit) {
+    var sliderPosition by remember(spanMeters) { mutableFloatStateOf(spanToSliderPosition(spanMeters)) }
+    val liveSpan = sliderPositionToSpan(sliderPosition)
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(text = "Map area", style = MaterialTheme.typography.bodyLarge)
+            Text(text = formatDistance(liveSpan, unitSystem), style = MaterialTheme.typography.bodyLarge, color = DimWhite)
+        }
+        Slider(
+            value = sliderPosition,
+            onValueChange = { sliderPosition = it },
+            onValueChangeFinished = { onSpanChange(sliderPositionToSpan(sliderPosition)) },
+            colors = SliderDefaults.colors(
+                thumbColor = PureWhite,
+                activeTrackColor = PureWhite,
+                inactiveTrackColor = DimWhite,
+            ),
+        )
+    }
+}
+
+@Composable
+private fun MapLayerPicker(selectedLayer: MapLayer, onLayerSelected: (MapLayer) -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(text = "Map layer", style = MaterialTheme.typography.bodyLarge)
+        Spacer(modifier = Modifier.height(8.dp))
+        MapLayer.entries.chunked(2).forEach { rowLayers ->
+            Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
+                rowLayers.forEach { layer ->
+                    Text(
+                        text = layer.label,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = if (layer == selectedLayer) PureWhite else DimWhite,
+                        modifier = Modifier
+                            .clickable { onLayerSelected(layer) }
+                            .padding(vertical = 4.dp),
+                    )
+                }
+            }
+        }
     }
 }
 

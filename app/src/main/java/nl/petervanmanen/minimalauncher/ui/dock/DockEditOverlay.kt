@@ -55,6 +55,9 @@ fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
     val allowRotation by viewModel.allowRotation.collectAsState()
     val showWeather by viewModel.showWeather.collectAsState()
     val showMap by viewModel.showMap.collectAsState()
+    val mapSpanMeters by viewModel.mapSpanMeters.collectAsState()
+    val mapLayer by viewModel.mapLayer.collectAsState()
+    val mapColorEnabled by viewModel.mapColorEnabled.collectAsState()
     val showDate by viewModel.showDate.collectAsState()
     val hideStatusBar by viewModel.hideStatusBar.collectAsState()
     val notificationBubbleEnabled by viewModel.notificationBubbleEnabled.collectAsState()
@@ -78,6 +81,12 @@ fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
                     onShowWeatherChange = { viewModel.setShowWeather(it) },
                     showMap = showMap,
                     onShowMapChange = { viewModel.setShowMap(it) },
+                    mapSpanMeters = mapSpanMeters,
+                    onMapSpanMetersChange = { viewModel.setMapSpanMeters(it) },
+                    mapLayer = mapLayer,
+                    onMapLayerChange = { viewModel.setMapLayer(it) },
+                    mapColorEnabled = mapColorEnabled,
+                    onMapColorEnabledChange = { viewModel.setMapColorEnabled(it) },
                     showDate = showDate,
                     onShowDateChange = { viewModel.setShowDate(it) },
                     hideStatusBar = hideStatusBar,

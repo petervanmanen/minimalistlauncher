@@ -103,6 +103,8 @@ The app is one `HorizontalPager` of three screens, dock in the center
 - [ ] **Show weather** / **Show map** / **Show date** toggles, each default
   **On**, independently show/hide their dashboard section regardless of
   location permission state. [#7]
+- [ ] **Map area** slider, **Map layer** picker, and **Map color** toggle —
+  see the Map section below for details. [#12]
 - [ ] **Hide status bar** toggle, default **On** (hidden by default for a
   clean look). Applies live without restarting the app; swiping down from
   the top edge still transiently reveals it (`BEHAVIOR_SHOW_TRANSIENT_BARS_
@@ -229,8 +231,21 @@ gated — the screen degrades gracefully without either.
 - [ ] Inset by the same horizontal margin as the surrounding dashboard text
   (32dp), square aspect ratio — supersedes an earlier "full width" choice
   once the two turned out to conflict. [feedback, then #9]
-- [ ] Rendered in **greyscale**. [feedback]
+- [ ] Rendered in **greyscale** by default; a **Map color** setting (off by
+  default) switches it to the tiles' real colors. [feedback, then #12]
 - [ ] A marker dot shows the exact current-location point on the map.
+- [ ] **Map area** slider in Settings (log scale, 100m to 1000km), showing
+  the live selected span next to it in the device's own units — meters/km
+  or feet/miles depending on the device's locale (`LocaleData.
+  getMeasurementSystem`). Only persists (and re-fetches the map) once the
+  drag ends, not on every intermediate value. Default reproduces roughly
+  what the map showed before this was configurable. [#12]
+- [ ] **Map layer** picker in Settings — Standard, Humanitarian, Cycle, or
+  Topo, all free OSM-based raster tiles requiring no API key. Changing it
+  re-fetches the map live. [#12]
+- [ ] Changing map area or layer while the dashboard isn't visible (e.g.
+  from Settings) still takes effect the next time it's shown, without
+  needing an app restart. [#12]
 - [ ] Tapping the map launches the user's configured maps app; if none is
   configured yet, it opens the app picker instead. [#1]
 - [ ] Long-pressing the map always opens the app picker, even if one is
