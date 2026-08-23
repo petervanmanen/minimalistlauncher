@@ -14,9 +14,16 @@ fun launcherViewModelFactory(container: AppContainer) = viewModelFactory {
             container.appRepository,
             container.settingsRepository,
             container.appLinkRepository,
+            container.notificationRepository,
         )
     }
-    initializer { AllAppsViewModel(container.appRepository) }
+    initializer {
+        AllAppsViewModel(
+            container.appRepository,
+            container.notificationRepository,
+            container.settingsRepository,
+        )
+    }
     initializer {
         DashboardViewModel(
             container.locationProvider,

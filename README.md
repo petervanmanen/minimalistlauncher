@@ -26,7 +26,9 @@ link on your phone (or transfer the file over) and tap to install — see
   rotation (off by default), show/hide the weather, map, and date sections
   independently, hide the system status bar (on by default — swipe down
   from the top edge to reveal it temporarily), choose which app opens each
-  dashboard section, and set a pure black wallpaper in one tap.
+  dashboard section, turn on a colored notification bubble next to an app's
+  name in the dock/all-apps list when it has a pending notification (off by
+  default), and set a pure black wallpaper in one tap.
 
 ## Screens
 

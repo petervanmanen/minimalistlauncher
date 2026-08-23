@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import nl.petervanmanen.minimalauncher.data.model.DockPage
@@ -20,6 +21,8 @@ fun DockScreen(viewModel: DockViewModel, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val dockConfig by viewModel.dockConfig.collectAsState()
     val isEditing by viewModel.isEditing.collectAsState()
+    val packagesWithNotificationBubble by viewModel.packagesWithNotificationBubble.collectAsState()
+    val notificationBubbleColor by viewModel.notificationBubbleColor.collectAsState()
     val pageCount = dockConfig.pages.size.coerceAtLeast(1)
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
@@ -38,6 +41,8 @@ fun DockScreen(viewModel: DockViewModel, modifier: Modifier = Modifier) {
                     }
                 },
                 onBackgroundLongClick = { viewModel.enterEditMode() },
+                packagesWithNotificationBubble = packagesWithNotificationBubble,
+                notificationBubbleColor = Color(notificationBubbleColor),
             )
         }
 

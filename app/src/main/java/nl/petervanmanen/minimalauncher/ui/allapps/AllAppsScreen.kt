@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import nl.petervanmanen.minimalauncher.data.model.InstalledApp
@@ -29,6 +30,8 @@ fun AllAppsScreen(viewModel: AllAppsViewModel, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val apps by viewModel.visibleApps.collectAsState()
     val hiddenApps by viewModel.hiddenApps.collectAsState()
+    val packagesWithNotificationBubble by viewModel.packagesWithNotificationBubble.collectAsState()
+    val notificationBubbleColor by viewModel.notificationBubbleColor.collectAsState()
 
     var selectedApp by remember { mutableStateOf<InstalledApp?>(null) }
     var showHiddenApps by remember { mutableStateOf(false) }
@@ -58,12 +61,14 @@ fun AllAppsScreen(viewModel: AllAppsViewModel, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { showHiddenApps = true }
-                        .padding(vertical = 12.dp),
+                        .padding(start = 20.dp, top = 12.dp, bottom = 12.dp),
                 )
             }
         } else {
             null
         },
+        packagesWithNotificationBubble = packagesWithNotificationBubble,
+        notificationBubbleColor = Color(notificationBubbleColor),
     )
 
     selectedApp?.let { app ->

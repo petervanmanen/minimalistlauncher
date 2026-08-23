@@ -115,6 +115,23 @@ The app is one `HorizontalPager` of three screens, dock in the center
   directly on the dashboard (#1). [#7]
 - [ ] All four toggles and all three app-link choices persist across app
   restarts (DataStore). [#7]
+- [ ] **Notification bubble** toggle, default **Off**, plus a row of six
+  preset colors (tap to select; the selected one shows a white ring) —
+  default red. Both persist across app restarts (DataStore). [#11]
+
+## Notification bubble (Dock / All Apps)
+
+- [ ] When on, a small colored dot appears next to an app's name — in the
+  **Dock** and in the **All Apps** list — for whichever apps currently have
+  at least one active notification. Not shown on the Dashboard, since its
+  own notification list already shows that directly. [#11]
+- [ ] The dot sits in the margin gutter to the left of the app name, closer
+  to the true screen edge than the standard 32dp text margin — the same
+  "ignore the margins" treatment used elsewhere, reusing a gutter that's
+  always reserved so app names line up identically whether or not a given
+  row has a dot. [#11]
+- [ ] Uses the configured bubble color; updates live as notifications
+  arrive/clear, without needing to reopen either screen.
 
 ## All Apps screen
 

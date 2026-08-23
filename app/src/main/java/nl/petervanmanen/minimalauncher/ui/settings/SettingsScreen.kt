@@ -1,7 +1,10 @@
 package nl.petervanmanen.minimalauncher.ui.settings
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
@@ -32,6 +38,15 @@ import nl.petervanmanen.minimalauncher.ui.theme.PureWhite
 private enum class WallpaperStatus { IDLE, SETTING, DONE, FAILED }
 private enum class AppLink { MAPS, WEATHER, DATE }
 
+private val BUBBLE_COLOR_PALETTE = listOf(
+    0xFFFF3B30.toInt(), // red
+    0xFFFF9500.toInt(), // orange
+    0xFFFFCC00.toInt(), // yellow
+    0xFF34C759.toInt(), // green
+    0xFF007AFF.toInt(), // blue
+    0xFFAF52DE.toInt(), // purple
+)
+
 @Composable
 fun SettingsScreen(
     allowRotation: Boolean,
@@ -44,6 +59,10 @@ fun SettingsScreen(
     onShowDateChange: (Boolean) -> Unit,
     hideStatusBar: Boolean,
     onHideStatusBarChange: (Boolean) -> Unit,
+    notificationBubbleEnabled: Boolean,
+    onNotificationBubbleEnabledChange: (Boolean) -> Unit,
+    notificationBubbleColor: Int,
+    onNotificationBubbleColorChange: (Int) -> Unit,
     installedApps: List<InstalledApp>,
     mapsAppPackage: String?,
     onMapsAppChange: (InstalledApp) -> Unit,
@@ -100,6 +119,10 @@ fun SettingsScreen(
         ToggleRow("Show date", showDate, onShowDateChange)
         Spacer(modifier = Modifier.height(20.dp))
         ToggleRow("Hide status bar", hideStatusBar, onHideStatusBarChange)
+        Spacer(modifier = Modifier.height(20.dp))
+        ToggleRow("Notification bubble", notificationBubbleEnabled, onNotificationBubbleEnabledChange)
+        Spacer(modifier = Modifier.height(20.dp))
+        ColorPaletteRow(notificationBubbleColor, onNotificationBubbleColorChange)
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -155,6 +178,25 @@ private fun ToggleRow(label: String, value: Boolean, onChange: (Boolean) -> Unit
             style = MaterialTheme.typography.bodyLarge,
             color = if (value) PureWhite else DimWhite,
         )
+    }
+}
+
+@Composable
+private fun ColorPaletteRow(selectedColor: Int, onColorSelected: (Int) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        BUBBLE_COLOR_PALETTE.forEach { color ->
+            val isSelected = color == selectedColor
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .background(Color(color), CircleShape)
+                    .border(2.dp, if (isSelected) PureWhite else Color.Transparent, CircleShape)
+                    .clickable { onColorSelected(color) },
+            )
+        }
     }
 }
 

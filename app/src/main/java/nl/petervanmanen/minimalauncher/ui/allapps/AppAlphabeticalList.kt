@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import nl.petervanmanen.minimalauncher.data.model.InstalledApp
@@ -28,6 +29,8 @@ fun AppAlphabeticalList(
     modifier: Modifier = Modifier,
     onAppLongClick: ((InstalledApp) -> Unit)? = null,
     footer: (@Composable () -> Unit)? = null,
+    packagesWithNotificationBubble: Set<String> = emptySet(),
+    notificationBubbleColor: Color = Color.Unspecified,
 ) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -40,13 +43,15 @@ fun AppAlphabeticalList(
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 32.dp, vertical = 24.dp),
+            contentPadding = PaddingValues(start = 12.dp, end = 32.dp, top = 24.dp, bottom = 24.dp),
         ) {
             items(apps, key = { it.packageName }) { app ->
                 AppLabelRow(
                     label = app.label,
                     onClick = { onAppClick(app) },
                     onLongClick = onAppLongClick?.let { { it(app) } },
+                    showBubble = app.packageName in packagesWithNotificationBubble,
+                    bubbleColor = notificationBubbleColor,
                 )
             }
             if (footer != null) {

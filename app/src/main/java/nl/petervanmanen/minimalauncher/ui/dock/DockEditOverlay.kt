@@ -57,6 +57,8 @@ fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
     val showMap by viewModel.showMap.collectAsState()
     val showDate by viewModel.showDate.collectAsState()
     val hideStatusBar by viewModel.hideStatusBar.collectAsState()
+    val notificationBubbleEnabled by viewModel.notificationBubbleEnabled.collectAsState()
+    val notificationBubbleColor by viewModel.notificationBubbleColor.collectAsState()
     val installedApps by viewModel.installedApps.collectAsState()
     val mapsAppPackage by viewModel.mapsAppPackage.collectAsState()
     val weatherAppPackage by viewModel.weatherAppPackage.collectAsState()
@@ -80,6 +82,10 @@ fun DockEditOverlay(viewModel: DockViewModel, currentPageIndex: Int) {
                     onShowDateChange = { viewModel.setShowDate(it) },
                     hideStatusBar = hideStatusBar,
                     onHideStatusBarChange = { viewModel.setHideStatusBar(it) },
+                    notificationBubbleEnabled = notificationBubbleEnabled,
+                    onNotificationBubbleEnabledChange = { viewModel.setNotificationBubbleEnabled(it) },
+                    notificationBubbleColor = notificationBubbleColor,
+                    onNotificationBubbleColorChange = { viewModel.setNotificationBubbleColor(it) },
                     installedApps = installedApps,
                     mapsAppPackage = mapsAppPackage,
                     onMapsAppChange = { app -> viewModel.setMapsApp(app.packageName) },
