@@ -15,6 +15,15 @@ alphabetical app list, and a dashboard with weather, location, and notifications
   app (tap its name), remove it (tap "−"), drag "≡" to reorder, "+ Add app" to
   add one from the full app list, or add/remove dock pages.
 
+## Screens
+
+The app is one horizontal row of three screens, with the dock in the middle:
+
+| Left — **Dashboard** | Center — **Dock** | Right — **All Apps** |
+| :---: | :---: | :---: |
+| ![Dashboard screen](docs/screenshots/left-dashboard.png) | ![Dock screen](docs/screenshots/center-dock.png) | ![All Apps screen](docs/screenshots/right-allapps.png) |
+| Weather, current location, and notifications. Reached by swiping right from the dock. | Your chosen apps, text-only, across one or more vertical pages. The home screen. | Every installed app, alphabetically. Reached by swiping left from the dock. |
+
 ## Building
 
 Requires a JDK the bundled Gradle wrapper can run on (Android Studio's own JBR
