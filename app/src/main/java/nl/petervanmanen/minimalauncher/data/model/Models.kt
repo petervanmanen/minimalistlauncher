@@ -3,10 +3,18 @@ package nl.petervanmanen.minimalauncher.data.model
 import android.app.PendingIntent
 import kotlinx.serialization.Serializable
 
-/** An app installed on the device that can be launched. */
+/**
+ * An app installed on the device that can be launched.
+ *
+ * [canRemove] is false for non-updated system apps (e.g. Settings) — Android
+ * itself refuses to uninstall those, and hiding them from the launcher could
+ * strand the user without access to core phone functionality, so both
+ * actions are gated on the same flag.
+ */
 data class InstalledApp(
     val packageName: String,
     val label: String,
+    val canRemove: Boolean = true,
 )
 
 /** An app placed on a dock page, with an optional user-chosen display name. */

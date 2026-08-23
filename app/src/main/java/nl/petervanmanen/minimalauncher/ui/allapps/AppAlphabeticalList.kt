@@ -20,6 +20,7 @@ fun AppAlphabeticalList(
     apps: List<InstalledApp>,
     onAppClick: (InstalledApp) -> Unit,
     modifier: Modifier = Modifier,
+    onAppLongClick: ((InstalledApp) -> Unit)? = null,
 ) {
     val listState = rememberLazyListState()
 
@@ -30,7 +31,11 @@ fun AppAlphabeticalList(
             contentPadding = PaddingValues(horizontal = 32.dp, vertical = 24.dp),
         ) {
             items(apps, key = { it.packageName }) { app ->
-                AppLabelRow(label = app.label, onClick = { onAppClick(app) })
+                AppLabelRow(
+                    label = app.label,
+                    onClick = { onAppClick(app) },
+                    onLongClick = onAppLongClick?.let { { it(app) } },
+                )
             }
         }
 
