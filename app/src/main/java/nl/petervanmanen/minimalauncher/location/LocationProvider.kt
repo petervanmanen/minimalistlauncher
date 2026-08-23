@@ -33,7 +33,7 @@ class LocationProvider(private val context: Context) {
     suspend fun getCurrentLocation(): Location? = withTimeoutOrNull(LOCATION_TIMEOUT_MS) {
         suspendCancellableCoroutine { cont ->
             val cancellationSource = CancellationTokenSource()
-            fusedClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, cancellationSource.token)
+            fusedClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationSource.token)
                 .addOnSuccessListener { location -> if (cont.isActive) cont.resume(location) }
                 .addOnFailureListener { if (cont.isActive) cont.resume(null) }
             cont.invokeOnCancellation { cancellationSource.cancel() }
