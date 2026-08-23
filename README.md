@@ -8,9 +8,9 @@ alphabetical app list, and a dashboard with weather, location, and notifications
 
 - **Dock** (center screen) — your chosen apps, in text form, across one or more
   vertical pages (swipe up/down).
-- **Swipe right** from the dock → the alphabetical list of every installed app.
-- **Swipe left** from the dock → weather, current location, and notifications.
+- **Swipe right** from the dock → weather, current location, and notifications.
   Tapping a notification opens the app it came from.
+- **Swipe left** from the dock → the alphabetical list of every installed app.
 - **Long-press** anywhere on an empty area of the dock to edit it: rename an
   app (tap its name), remove it (tap "−"), drag "≡" to reorder, "+ Add app" to
   add one from the full app list, or add/remove dock pages.
