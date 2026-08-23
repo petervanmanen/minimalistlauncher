@@ -1,31 +1,52 @@
 package nl.petervanmanen.minimalauncher.ui.dashboard
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import nl.petervanmanen.minimalauncher.data.model.WeatherInfo
 import nl.petervanmanen.minimalauncher.ui.theme.DimWhite
 
+/**
+ * Tapping opens the configured weather app (or the picker, if none is set
+ * yet); long-press always opens the picker so the choice can be changed.
+ */
 @Composable
 fun WeatherSection(
     hasLocationPermission: Boolean,
     weather: WeatherInfo?,
     isLoading: Boolean,
     onRequestLocationPermission: () -> Unit,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
+    if (!hasLocationPermission) {
+        Text(
+            text = "Enable location",
+            style = MaterialTheme.typography.bodyLarge,
+            color = DimWhite,
+            modifier = modifier.clickable(onClick = onRequestLocationPermission),
+        )
+        return
+    }
+
+    val interactionSource = remember { MutableInteractionSource() }
+    Column(
+        modifier = modifier.combinedClickable(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = onClick,
+            onLongClick = onLongClick,
+        ),
+    ) {
         when {
-            !hasLocationPermission -> Text(
-                text = "Enable location",
-                style = MaterialTheme.typography.bodyLarge,
-                color = DimWhite,
-                modifier = Modifier.clickable(onClick = onRequestLocationPermission),
-            )
             isLoading && weather == null -> Text(
                 text = "…",
                 style = MaterialTheme.typography.bodyLarge,

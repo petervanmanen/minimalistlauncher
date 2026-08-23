@@ -16,6 +16,8 @@ fun launcherViewModelFactory(container: AppContainer) = viewModelFactory {
             container.weatherRepository,
             container.mapRepository,
             container.notificationRepository,
+            container.appLinkRepository,
+            container.appRepository,
         )
     }
 }

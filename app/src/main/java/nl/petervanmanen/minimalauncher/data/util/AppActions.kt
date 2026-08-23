@@ -5,6 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 
+fun launchApp(context: Context, packageName: String) {
+    context.packageManager.getLaunchIntentForPackage(packageName)?.let { context.startActivity(it) }
+}
+
 fun requestUninstall(context: Context, packageName: String) {
     val intent = Intent(Intent.ACTION_DELETE, Uri.fromParts("package", packageName, null))
     context.startActivity(intent)

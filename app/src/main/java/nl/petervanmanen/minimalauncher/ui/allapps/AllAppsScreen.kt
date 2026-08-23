@@ -1,6 +1,5 @@
 package nl.petervanmanen.minimalauncher.ui.allapps
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import nl.petervanmanen.minimalauncher.data.model.InstalledApp
+import nl.petervanmanen.minimalauncher.data.util.launchApp
 import nl.petervanmanen.minimalauncher.data.util.openAppInfo
 import nl.petervanmanen.minimalauncher.data.util.requestUninstall
 import nl.petervanmanen.minimalauncher.ui.theme.DimWhite
@@ -50,7 +50,7 @@ fun AllAppsScreen(viewModel: AllAppsViewModel, modifier: Modifier = Modifier) {
     ) {
         AppAlphabeticalList(
             apps = apps,
-            onAppClick = { app -> launchApp(app, context) },
+            onAppClick = { app -> launchApp(context, app.packageName) },
             onAppLongClick = { app -> selectedApp = app },
             modifier = Modifier.weight(1f),
         )
@@ -76,11 +76,5 @@ fun AllAppsScreen(viewModel: AllAppsViewModel, modifier: Modifier = Modifier) {
             onHide = { viewModel.hideApp(app.packageName) },
             onAppInfo = { openAppInfo(context, app.packageName) },
         )
-    }
-}
-
-private fun launchApp(app: InstalledApp, context: Context) {
-    context.packageManager.getLaunchIntentForPackage(app.packageName)?.let { intent ->
-        context.startActivity(intent)
     }
 }

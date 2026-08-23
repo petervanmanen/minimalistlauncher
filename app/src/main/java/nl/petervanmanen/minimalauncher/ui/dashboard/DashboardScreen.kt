@@ -25,7 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import nl.petervanmanen.minimalauncher.data.util.launchApp
 import nl.petervanmanen.minimalauncher.location.hasLocationPermission
+import nl.petervanmanen.minimalauncher.ui.components.AppPickerScreen
+
+private enum class DashboardLink { MAPS, WEATHER }
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -35,6 +39,7 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
 
     var hasLocationPermission by remember { mutableStateOf(hasLocationPermission(context)) }
     var isNotificationAccessGranted by remember { mutableStateOf(viewModel.isNotificationAccessGranted()) }
+    var configuringLink by remember { mutableStateOf<DashboardLink?>(null) }
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -59,6 +64,24 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
     val mapSnapshot by viewModel.mapSnapshot.collectAsState()
     val isLoadingLocationData by viewModel.isLoadingLocationData.collectAsState()
     val notifications by viewModel.notifications.collectAsState()
+    val installedApps by viewModel.installedApps.collectAsState()
+    val mapsAppPackage by viewModel.mapsAppPackage.collectAsState()
+    val weatherAppPackage by viewModel.weatherAppPackage.collectAsState()
+
+    configuringLink?.let { link ->
+        AppPickerScreen(
+            apps = installedApps,
+            onAppSelected = { app ->
+                when (link) {
+                    DashboardLink.MAPS -> viewModel.setMapsApp(app.packageName)
+                    DashboardLink.WEATHER -> viewModel.setWeatherApp(app.packageName)
+                }
+                configuringLink = null
+            },
+            onBack = { configuringLink = null },
+        )
+        return
+    }
 
     Column(
         modifier = modifier
@@ -72,6 +95,11 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
             onRequestLocationPermission = {
                 locationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
             },
+            onClick = {
+                val pkg = weatherAppPackage
+                if (pkg != null) launchApp(context, pkg) else configuringLink = DashboardLink.WEATHER
+            },
+            onLongClick = { configuringLink = DashboardLink.WEATHER },
             modifier = Modifier.padding(horizontal = 32.dp),
         )
 
@@ -81,6 +109,11 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
             hasLocationPermission = hasLocationPermission,
             mapSnapshot = mapSnapshot,
             isLoading = isLoadingLocationData,
+            onClick = {
+                val pkg = mapsAppPackage
+                if (pkg != null) launchApp(context, pkg) else configuringLink = DashboardLink.MAPS
+            },
+            onLongClick = { configuringLink = DashboardLink.MAPS },
         )
 
         Spacer(modifier = Modifier.height(24.dp))

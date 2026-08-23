@@ -1,6 +1,7 @@
 package nl.petervanmanen.minimalauncher.di
 
 import android.content.Context
+import nl.petervanmanen.minimalauncher.data.repository.AppLinkRepository
 import nl.petervanmanen.minimalauncher.data.repository.AppRepository
 import nl.petervanmanen.minimalauncher.data.repository.DockRepository
 import nl.petervanmanen.minimalauncher.data.repository.MapRepository
@@ -16,4 +17,5 @@ class AppContainer(context: Context) {
     val weatherRepository = WeatherRepository(locationProvider)
     val mapRepository = MapRepository()
     val notificationRepository = NotificationRepository(context)
+    val appLinkRepository = AppLinkRepository(context)
 }

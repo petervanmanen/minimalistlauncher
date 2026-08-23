@@ -5,12 +5,17 @@ import androidx.annotation.RequiresPermission
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import nl.petervanmanen.minimalauncher.data.model.InstalledApp
 import nl.petervanmanen.minimalauncher.data.model.MapSnapshot
 import nl.petervanmanen.minimalauncher.data.model.NotificationEntry
 import nl.petervanmanen.minimalauncher.data.model.WeatherInfo
+import nl.petervanmanen.minimalauncher.data.repository.AppLinkRepository
+import nl.petervanmanen.minimalauncher.data.repository.AppRepository
 import nl.petervanmanen.minimalauncher.data.repository.MapRepository
 import nl.petervanmanen.minimalauncher.data.repository.NotificationRepository
 import nl.petervanmanen.minimalauncher.data.repository.WeatherRepository
@@ -21,6 +26,8 @@ class DashboardViewModel(
     private val weatherRepository: WeatherRepository,
     private val mapRepository: MapRepository,
     private val notificationRepository: NotificationRepository,
+    private val appLinkRepository: AppLinkRepository,
+    appRepository: AppRepository,
 ) : ViewModel() {
 
     private val _weather = MutableStateFlow<WeatherInfo?>(null)
@@ -33,6 +40,13 @@ class DashboardViewModel(
     val isLoadingLocationData: StateFlow<Boolean> = _isLoadingLocationData.asStateFlow()
 
     val notifications: StateFlow<List<NotificationEntry>> = notificationRepository.notifications
+
+    val installedApps: StateFlow<List<InstalledApp>> = appRepository.installedApps
+
+    val mapsAppPackage: StateFlow<String?> = appLinkRepository.mapsAppPackage
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+    val weatherAppPackage: StateFlow<String?> = appLinkRepository.weatherAppPackage
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     fun isNotificationAccessGranted(): Boolean = notificationRepository.isListenerConnected()
 
@@ -53,4 +67,8 @@ class DashboardViewModel(
     fun launchNotification(entry: NotificationEntry) = notificationRepository.launch(entry)
 
     fun dismissNotification(entry: NotificationEntry) = notificationRepository.dismiss(entry)
+
+    fun setMapsApp(packageName: String) = viewModelScope.launch { appLinkRepository.setMapsApp(packageName) }
+
+    fun setWeatherApp(packageName: String) = viewModelScope.launch { appLinkRepository.setWeatherApp(packageName) }
 }

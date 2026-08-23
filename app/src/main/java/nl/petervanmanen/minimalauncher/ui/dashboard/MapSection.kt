@@ -3,6 +3,8 @@ package nl.petervanmanen.minimalauncher.ui.dashboard
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,20 +24,33 @@ import nl.petervanmanen.minimalauncher.data.model.MapSnapshot
 import nl.petervanmanen.minimalauncher.ui.theme.DimWhite
 import nl.petervanmanen.minimalauncher.ui.theme.PureWhite
 
+/**
+ * Tapping opens the configured maps app (or the picker, if none is set yet);
+ * long-press always opens the picker so the choice can be changed.
+ */
 @Composable
 fun MapSection(
     hasLocationPermission: Boolean,
     mapSnapshot: MapSnapshot?,
     isLoading: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (!hasLocationPermission) return
 
+    val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .border(1.dp, DimWhite),
+            .border(1.dp, DimWhite)
+            .combinedClickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick,
+                onLongClick = onLongClick,
+            ),
         contentAlignment = Alignment.Center,
     ) {
         when {
