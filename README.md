@@ -5,6 +5,12 @@ screen, text-only app lists (no icons), a user-curated multi-page dock, a full
 alphabetical app list, and a dashboard with weather, a small map of your current
 location, and notifications.
 
+**[⬇ Download the latest build](https://github.com/petervanmanen/minimalistlauncher/releases/download/latest/app-debug.apk)**
+— a debug-signed APK, rebuilt automatically by
+[GitHub Actions](.github/workflows/build.yml) on every push to `main`. Open the
+link on your phone (or transfer the file over) and tap to install — see
+[Installing on a device](#installing-on-a-device) below for the rest of the setup.
+
 ## Navigation
 
 - **Dock** (center screen) — your chosen apps, in text form, across one or more
@@ -43,12 +49,13 @@ pushes to `main` — publishes it to a rolling "latest" GitHub Release.
 
 ## Installing on a device
 
-1. Enable Developer Options and USB debugging on the phone, then connect it
-   over USB, or just download the APK from the GitHub Release directly on
-   the phone.
-2. Install it: `adb install -r app-debug.apk`, or tap the APK on-device
-   (you'll need to allow "install unknown apps" for whichever app you used
-   to open it).
+1. Grab the APK — either
+   [download the latest build](https://github.com/petervanmanen/minimalistlauncher/releases/download/latest/app-debug.apk)
+   directly on the phone, or enable Developer Options and USB debugging and
+   connect it over USB to build/install from source instead.
+2. Install it: tap the downloaded APK (you'll need to allow "install unknown
+   apps" for whichever app you used to open it), or `adb install -r app-debug.apk`
+   if you built it yourself.
 3. Set it as your home app: **Settings → Apps → Default apps → Home app**.
 4. The dashboard screen will prompt you in-app to grant location access
    (for weather) and notification access — the latter opens Android's
