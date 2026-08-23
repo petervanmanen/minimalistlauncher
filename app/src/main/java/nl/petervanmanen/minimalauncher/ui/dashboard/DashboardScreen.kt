@@ -92,6 +92,7 @@ fun DashboardScreen(viewModel: DashboardViewModel, modifier: Modifier = Modifier
                 context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
             },
             onNotificationClick = { entry -> viewModel.launchNotification(entry) },
+            onNotificationDismiss = { entry -> viewModel.dismissNotification(entry) },
             modifier = Modifier.weight(1f).padding(horizontal = 32.dp),
         )
     }

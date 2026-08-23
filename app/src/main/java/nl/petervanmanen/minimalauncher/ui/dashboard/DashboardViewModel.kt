@@ -51,4 +51,6 @@ class DashboardViewModel(
     }
 
     fun launchNotification(entry: NotificationEntry) = notificationRepository.launch(entry)
+
+    fun dismissNotification(entry: NotificationEntry) = notificationRepository.dismiss(entry)
 }

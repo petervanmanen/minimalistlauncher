@@ -56,4 +56,5 @@ data class NotificationEntry(
     val text: String,
     val postTime: Long,
     val contentIntent: PendingIntent?,
+    val picture: Bitmap? = null,
 )

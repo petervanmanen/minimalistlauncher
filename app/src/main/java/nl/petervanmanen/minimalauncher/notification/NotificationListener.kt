@@ -2,9 +2,12 @@ package nl.petervanmanen.minimalauncher.notification
 
 import android.app.Notification
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import androidx.core.graphics.drawable.toBitmap
 import nl.petervanmanen.minimalauncher.data.model.NotificationEntry
 
 /** OS/System UI chrome — status messages, not app notifications a user would tap through to. */
@@ -14,7 +17,13 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onListenerConnected() {
         super.onListenerConnected()
+        NotificationBridge.registerDismissHandler { key -> cancelNotification(key) }
         publish()
+    }
+
+    override fun onListenerDisconnected() {
+        NotificationBridge.unregisterDismissHandler()
+        super.onListenerDisconnected()
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
@@ -52,8 +61,22 @@ class NotificationListener : NotificationListenerService() {
             text = text,
             postTime = sbn.postTime,
             contentIntent = sbn.notification.contentIntent,
+            picture = extractPicture(sbn.notification),
         )
     }
+
+    /** The attached photo on a BigPictureStyle notification (e.g. a shared image), if any. */
+    private fun extractPicture(notification: Notification): Bitmap? = runCatching {
+        val extras = notification.extras
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            extras.getParcelable(Notification.EXTRA_PICTURE, Bitmap::class.java)
+                ?: extras.getParcelable(Notification.EXTRA_PICTURE_ICON, Icon::class.java)
+                    ?.loadDrawable(this)?.toBitmap()
+        } else {
+            @Suppress("DEPRECATION")
+            extras.getParcelable(Notification.EXTRA_PICTURE) as? Bitmap
+        }
+    }.getOrNull()
 
     private fun appLabelFor(packageName: String): String = runCatching {
         val appInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
