@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.graphics.Bitmap
 import androidx.compose.ui.geometry.Offset
 import kotlinx.serialization.Serializable
+import nl.petervanmanen.minimalauncher.data.remote.WeatherIconType
 
 /**
  * An app installed on the device that can be launched.
@@ -40,6 +41,8 @@ data class WeatherInfo(
     val temperatureCelsius: Double,
     val description: String,
     val locationName: String?,
+    val iconType: WeatherIconType,
+    val isDay: Boolean,
 )
 
 /** A stitched-together set of map tiles centered near [markerOffsetPx], your position within it. */

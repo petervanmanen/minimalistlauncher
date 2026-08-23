@@ -4,6 +4,7 @@ import android.location.Location
 import nl.petervanmanen.minimalauncher.data.model.WeatherInfo
 import nl.petervanmanen.minimalauncher.data.remote.OpenMeteoApi
 import nl.petervanmanen.minimalauncher.data.remote.describeWeatherCode
+import nl.petervanmanen.minimalauncher.data.remote.weatherIconType
 import nl.petervanmanen.minimalauncher.location.LocationProvider
 
 class WeatherRepository(
@@ -19,6 +20,8 @@ class WeatherRepository(
             temperatureCelsius = current.temperature,
             description = describeWeatherCode(current.weathercode),
             locationName = locationProvider.reverseGeocode(location.latitude, location.longitude),
+            iconType = weatherIconType(current.weathercode),
+            isDay = current.isDay == 1,
         )
     }
 }

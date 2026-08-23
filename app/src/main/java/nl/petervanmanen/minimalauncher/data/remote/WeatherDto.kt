@@ -12,4 +12,5 @@ data class OpenMeteoResponse(
 data class CurrentWeatherDto(
     val temperature: Double,
     val weathercode: Int,
+    @SerialName("is_day") val isDay: Int,
 )

@@ -18,3 +18,25 @@ fun describeWeatherCode(code: Int): String = when (code) {
     96, 99 -> "Thunderstorm with hail"
     else -> "Unknown"
 }
+
+enum class WeatherIconType {
+    CLEAR,
+    PARTLY_CLOUDY,
+    CLOUDY,
+    FOG,
+    RAIN,
+    SNOW,
+    THUNDERSTORM,
+}
+
+/** Same WMO grouping as [describeWeatherCode], collapsed to a shape we can draw. */
+fun weatherIconType(code: Int): WeatherIconType = when (code) {
+    0, 1 -> WeatherIconType.CLEAR
+    2 -> WeatherIconType.PARTLY_CLOUDY
+    3 -> WeatherIconType.CLOUDY
+    45, 48 -> WeatherIconType.FOG
+    51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82 -> WeatherIconType.RAIN
+    71, 73, 75, 77, 85, 86 -> WeatherIconType.SNOW
+    95, 96, 99 -> WeatherIconType.THUNDERSTORM
+    else -> WeatherIconType.CLOUDY
+}
