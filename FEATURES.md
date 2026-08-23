@@ -156,6 +156,10 @@ gated — the screen degrades gracefully without either.
   permission. [#7]
 - [ ] Updates live, at least once a minute. [#7]
 - [ ] Hidden when the **Show date** setting is off. [#7]
+- [ ] If the device's next alarm (`AlarmManager.getNextAlarmClock()`) is due
+  within the next 25 hours, its time is shown on its own line below the
+  date/time, next to a small hand-drawn bell icon. A farther-out alarm (or
+  none set) shows nothing extra. [#8]
 - [ ] Tapping launches the user's configured date app; if none is
   configured yet, it opens the app picker instead. [#7]
 - [ ] Long-pressing always opens the app picker, even if one is already
